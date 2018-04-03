@@ -10,9 +10,9 @@ struct gval
 {
   void *value;
   int freq;
-  void (*d)(void *, FILE *);
-  int (*c)(void *, void *);
-  void (*f)(void *);
+  void (*display)(void *, FILE *);
+  int (*compare)(void *, void *);
+  void (*free)(void *);
 };
 
 
@@ -23,9 +23,9 @@ newGVAL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *),void 
   assert(new != 0);
   new->value     = value;
   new->freq      = 1;
-  new->d    = d;
-  new->c    = c;
-  new->f    = f;
+  new->display   = d;
+  new->compare   = c;
+  new->free      = f;
   return new;
 }
 
@@ -33,7 +33,7 @@ extern void
 displayGVAL(void *v, FILE *fp)
 {
   GVAL *temp = v;
-  temp->d(temp->value, fp);
+  temp->display(temp->value, fp);
   if (temp->freq > 1) {
     fprintf(fp, "[%d]", temp->freq);
   }
@@ -46,7 +46,7 @@ compareGVAL(void *v, void *w)
 {
   GVAL *temp = v;
   GVAL *temp2 = w;
-  return temp->c(temp->value,temp2->value);
+  return temp->compare(temp->value,temp2->value);
 }
 
 
@@ -54,8 +54,8 @@ extern void
 freeGVAL(void *v)
 {
   GVAL *temp = v;
-  if (temp->f) {
-    temp->f(temp->value);
+  if (temp->free) {
+    temp->free(temp->value);
     free(temp);
   }
 }
@@ -66,9 +66,9 @@ struct gst
   BST *tree;
   QUEUE *nodes;
   int size;
-  void (*d)(void *, FILE *);
-  int (*c)(void *, void *);
-  void (*f)(void *);
+  void (*display)(void *, FILE *);
+  int (*compare)(void *, void *);
+  void (*free)(void *);
 };
 
 
@@ -81,9 +81,9 @@ newGST(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
   // g->root       = 0;
   g->nodes      = newQUEUE(d,f);
   g->size       = 0;
-  g->d          = d;
-  g->c          = c;
-  g->f          = f;
+  g->display    = d;
+  g->compare    = c;
+  g->free       = f;
   return g;
 }
 
@@ -91,7 +91,7 @@ newGST(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
 extern void
 insertGST(GST *g,void *value)
 {
-  GVAL *new = newGVAL(g->d, g->c, g->f, value);
+  GVAL *new = newGVAL(g->display, g->compare, g->free, value);
   assert(new != 0);
   if (sizeGST(g) == 0) {
     insertBST(g->tree, new);
@@ -118,7 +118,7 @@ insertGST(GST *g,void *value)
 extern int
 findGSTcount(GST *g,void *v)
 {
-  GVAL *temp = newGVAL(g->d, g->c, g->f, v);
+  GVAL *temp = newGVAL(g->display, g->compare, g->free, v);
   BSTNODE *find = findBST(g->tree, temp);
   if (find) {
     GVAL *temp2 = getBSTNODEvalue(find);
@@ -134,7 +134,7 @@ extern void *
 findGST(GST *g,void *v)
 
 {
-  GVAL *temp = newGVAL(g->d, g->c, g->f, v);
+  GVAL *temp = newGVAL(g->display, g->compare, g->free, v);
   BSTNODE *find = findBST(g->tree, temp);
   freeGVAL(temp);
   if (find) {
@@ -149,7 +149,7 @@ findGST(GST *g,void *v)
 extern void *
 deleteGST(GST *g,void *v)
 {
-  GVAL *temp = newGVAL(g->d, g->c, g->f, v);
+  GVAL *temp = newGVAL(g->display, g->compare, g->free, v);
   BSTNODE *find = findBST(g->tree, temp);
   // freeGVAL(temp);
   if (find) {
