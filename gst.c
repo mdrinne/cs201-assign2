@@ -29,13 +29,27 @@ newGVAL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *),void 
   return new;
 }
 
+
+extern void *
+getGVALvalue(GVAL *temp)
+{
+    return temp->value;
+}
+
+
+extern int
+getGVALfrequency(GVAL *temp)
+{
+  return temp->freq;
+}
+
 extern void
 displayGVAL(void *v, FILE *fp)
 {
   GVAL *temp = v;
-  temp->display(temp->value, fp);
-  if (temp->freq > 1) {
-    fprintf(fp, "[%d]", temp->freq);
+  temp->display(getGVALvalue(temp), fp);
+  if (getGVALfrequency(temp) > 1) {
+    fprintf(fp, "[%d]", getGVALfrequency(temp));
   }
   return;
 }
@@ -46,7 +60,7 @@ compareGVAL(void *v, void *w)
 {
   GVAL *temp = v;
   GVAL *temp2 = w;
-  return temp->compare(temp->value,temp2->value);
+  return temp->compare(getGVALvalue(temp),getGVALvalue(temp2));
 }
 
 
@@ -55,9 +69,25 @@ freeGVAL(void *v)
 {
   GVAL *temp = v;
   if (temp->free) {
-    temp->free(temp->value);
+    temp->free(getGVALvalue(temp));
     free(temp);
   }
+}
+
+
+extern void
+incrGVALfrequency(GVAL *temp)
+{
+  temp->freq++;
+  return;
+}
+
+
+extern void
+decrGVALfrequency(GVAL *temp)
+{
+  temp->freq--;
+  return;
 }
 
 
@@ -103,7 +133,7 @@ insertGST(GST *g,void *value)
   if (temp) {
     freeGVAL(new);
     GVAL *temp2 = getBSTNODEvalue(temp);
-    temp2->freq++;
+    incrGVALfrequency(temp2);
     g->size++;
     return;
   }
@@ -122,7 +152,7 @@ findGSTcount(GST *g,void *v)
   BSTNODE *find = findBST(g->tree, temp);
   if (find) {
     GVAL *temp2 = getBSTNODEvalue(find);
-    int val = temp2->freq;
+    int val = getGVALfrequency(temp2);
     freeGVAL(temp);
     return val;
   }
@@ -139,7 +169,7 @@ findGST(GST *g,void *v)
   freeGVAL(temp);
   if (find) {
     GVAL *temp2 = getBSTNODEvalue(find);
-    void *val = temp2->value;
+    void *val = getGVALvalue(temp2);
     return val;
   }
   return NULL;
@@ -154,8 +184,8 @@ deleteGST(GST *g,void *v)
   // freeGVAL(temp);
   if (find) {
     GVAL *temp2 = getBSTNODEvalue(find);
-    if (temp2->freq > 1) {
-      temp2->freq--;
+    if (getGVALfrequency(temp2) > 1) {
+      decrGVALfrequency(temp2);
       g->size--;
       return NULL;
     }
@@ -167,7 +197,7 @@ deleteGST(GST *g,void *v)
       setBSTsize(g->tree, s);
       temp2 = getBSTNODEvalue(delete);
       g->size--;
-      return temp2->value;
+      return getGVALvalue(temp2);
     }
   }
   return NULL;
