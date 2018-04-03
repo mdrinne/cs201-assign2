@@ -6,6 +6,17 @@
 #include "avl.h"
 
 
+struct aval
+{
+  void *value;
+  int freq;
+  int height;
+  void (*display)(void *, FILE *);
+  int (*compare)(void *, void *);
+  void (*free)(void *);
+}
+
+
 extern AVL *
 newAVL(void (*)(void *,FILE *),int (*)(void *,void *),void (*)(void *))
 {
