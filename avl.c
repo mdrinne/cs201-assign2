@@ -158,7 +158,18 @@ getAVALbalance(BSTNODE *temp)
 extern void
 displayAVAL(void *v, FILE *fp)
 {
-
+  AVAL *temp = v;
+  temp->display(getAVALvalue(temp), fp);
+  if (getGVALfrequency(temp) > 1) {
+    fprintf(fp, "[%d]", getAVALfrequency(temp));
+  }
+  if (getAVALbalance(temp) == 1) {
+    fprintf(fp, "+");
+  }
+  if (getAVALbalance(temp) == -1) {
+    fprintf(fp, "-");
+  }
+  return;
 }
 
 
