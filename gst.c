@@ -116,8 +116,7 @@ newGST(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
   GST *g = malloc(sizeof(GST));
   assert(g != 0);
   g->tree       = newBST(displayGVAL,compareGVAL,NULL,freeGVALwhole);
-  // g->root       = 0;
-  g->nodes      = newQUEUE(d,f);
+  // g->nodes      = newQUEUE(d,f);
   g->size       = 0;
   g->display    = d;
   g->compare    = c;
@@ -253,7 +252,7 @@ displayGSTdebug(GST *g,FILE *fp)
 extern void
 freeGST(GST *g)
 {
-  // freeBST(g->tree);
+  freeBST(g->tree);
   free(g);
   return;
 }

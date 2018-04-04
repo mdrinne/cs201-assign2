@@ -107,10 +107,10 @@ setBSTNODEparent(BSTNODE *n, BSTNODE *replacement)
 
 //this function frees the given node
 extern void
-freeBSTNODE(BSTNODE *n, void (*free)(void *))
+freeBSTNODE(BSTNODE *n, void (*f)(void *))
 {
-  if (free != NULL) {
-    free(n->value);
+  if (f != NULL) {
+    f(getBSTNODEvalue(n));
     free(n);
   }
   return;
