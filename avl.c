@@ -120,18 +120,18 @@ getSibling(BSTNODE *temp)
 }
 
 
-extern int
-isLeaf(BSTNODE *temp)
-{
-  BSTNODE *l = getBSTNODEleft(temp);
-  BSTNODE *r = getBSTNODEright(temp);
-  if (!l && !r) {
-    return 1;
-  }
-  else {
-    return 0;
-  }
-}
+// extern int
+// isLeaf(BSTNODE *temp)
+// {
+//   BSTNODE *l = getBSTNODEleft(temp);
+//   BSTNODE *r = getBSTNODEright(temp);
+//   if (!l && !r) {
+//     return 1;
+//   }
+//   else {
+//     return 0;
+//   }
+// }
 
 
 extern void
@@ -152,11 +152,11 @@ setAVALbalance(BSTNODE *temp)
     clearAVALbalance(atemp);
     return;
   }
-  if (getHeight(l) - getHeight(r) > 0) {
+  if (getHeight(l) - getHeight(r) == 1) {
     atemp->balance = 1;
     return;
   }
-  if (getHeight(l) - getHeight(r) < 0) {
+  if (getHeight(l) - getHeight(r) == -1) {
     atemp->balance = -1;
     return;
   }
@@ -286,25 +286,138 @@ newAVL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
 }
 
 
+extern BSTNODE *
+getFavoriteChild(BSTNODE *temp)
+{
+  if (getBalance(temp) == 1) {
+    return getBSTNODEleft(temp);
+  }
+  else if (getBalance(temp) == -1){
+    return getBSTNODEright(temp);
+  }
+  else {
+    return NULL;
+  }
+}
+
+
+extern int
+checkLinear(BSTNODE *child, BSTNODE *parent, BSTNODE *gparent)
+{
+  /* check if linear left */
+  if (getBSTNODEleft(parent) == child) {
+    if (getBSTNODEleft(gparent) == parent) {
+      return 1;
+    }
+    else {
+      return 0;
+    }
+  }
+  /*check if linear right */
+  // else if (getBSTNODEright(parent) == child) {
+  else {
+    if (getBSTNODEright(gparent) == parent) {
+      return 1;
+    }
+    else {
+      return 0;
+    }
+  }
+}
+
+
+extern void
+rotateRight(BSTNODE *child, BSTNODE *parent)
+{
+  BSTNODE *childr = getBSTNODEright(child);
+  BSTNODE *gparent = getBSTNODEparent(parent);
+  if (getBSTNODEleft(gparent) == parent) {
+    setBSTNODEleft(gparent, child);
+  }
+  else {
+    setBSTNODEright(gparent, child);
+  }
+  setBSTNODEparent(child, gparent);
+  setBSTNODEright(child, parent);
+  setBSTNODEparent(parent, child);
+  setBSTNODEleft(parent, childr);
+  setBSTNODEparent(childr, parent);
+  return;
+}
+
+
+extern void
+rotateLeft(BSTNODE *child, BSTNODE *parent)
+{
+  BSTNODE *childl = getBSTNODEleft(child);
+  BSTNODE *gparent = getBSTNODEparent(parent);
+  if (getBSTNODEleft(gparent) == parent) {
+    setBSTNODEleft(gparent, child);
+  }
+  else {
+    setBSTNODEright(gparent, child);
+  }
+  setBSTNODEparent(child, gparent);
+  setBSTNODEleft(child, parent);
+  setBSTNODEparent(parent, child);
+  setBSTNODEright(parent, childl);
+  setBSTNODEparent(childl, parent);
+  return;
+
+}
+
+
+extern void
+rotate(BSTNODE *child, BSTNODE *parent)
+{
+  if (getBSTNODEleft(parent) == child) {
+    rotateRight(child, parent);
+  }
+  else {
+    rotateLeft(child, parent);
+  }
+  return;
+}
+
+
+
 extern void
 insertionFixup(AVL *a, BSTNODE *curr)
 {
   while (1) {
     BSTNODE *sibling = getSibling(curr);
-    AVAL *sib = getBSTNODEvalue(sibling);
+    BSTNODE *parent = getBSTNODEparent(curr);
     if (getBSTroot(a->tree) == curr) {
       return;
     }
-    else if (getAVALbalance(sib) == 1) {
-      clearAVALbalance(sib);
+    else if (getHeight(sibling) > getHeight(curr)) {
+      setAVALbalance(parent);
       return;
     }
-    else if (!sibling) {
-      setAVALbalance(curr);
-      curr = getBSTNODEparent(curr);
+    else if (getBalance(parent) == 0) {
+      setAVALbalance(parent);
+      curr = parent;
     }
     else {
-
+      BSTNODE *y = getFavoriteChild(curr);
+      if (y && !checkLinear(y,curr,parent)) {
+        rotate(y, curr);
+        rotate(y, parent);
+        determineAVALheight(curr);
+        determineAVALheight(parent);
+        determineAVALheight(y);
+        setAVALbalance(curr);
+        setAVALbalance(parent);
+        setAVALbalance(y);
+      }
+      else {
+        rotate(curr, parent);
+        determineAVALheight(parent);
+        determineAVALheight(curr);
+        setAVALbalance(parent);
+        setAVALbalance(curr);
+      }
+      return;
     }
   }
 }
@@ -332,9 +445,9 @@ insertAVL(AVL *a,void *value)
   else {
     BSTNODE *temp3 = insertBST(a->tree, new);
     a->size++;
-    BSTNODE *curr = temp3;
-    while (curr) {
-      determineAVALheight(getBSTNODEparent(curr));
+    BSTNODE *curr = getBSTNODEparent(temp3);
+    while (curr != getBSTroot(a->tree)) {
+      determineAVALheight(curr);
       curr = getBSTNODEparent(curr);
     }
     insertionFixup(a, temp3);
