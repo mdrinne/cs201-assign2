@@ -11,23 +11,25 @@ struct aval
   void *value;
   int freq;
   int height;
+  int balance;
   void (*display)(void *, FILE *);
   int (*compare)(void *, void *);
   void (*free)(void *);
 }
 
 
-extern AVL *
-newAVL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *), void *value)
+extern AVAL *
+newAVAL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *), void *value)
 {
   AVAL *new = malloc(sizeof(AVAL));
   assert(new != 0);
-  new->value     = value;
-  new->freq      = 1;
-  new->height    = 0;
-  new->display   = d;
-  new->compare   = c;
-  new->free      = f;
+  new->value       = value;
+  new->freq        = 1;
+  new->height      = 0;
+  new->balance     = 0;
+  new->display     = d;
+  new->compare     = c;
+  new->free        = f;
   return new;
 }
 
@@ -50,6 +52,106 @@ extern int
 getAVALheight(AVAL *temp)
 {
   return temp->height;
+}
+
+
+extern void
+setAVALheight(AVAL*temp, int h)
+{
+  temp->height = h;
+  return;
+}
+
+
+extern void
+determineAVALheight(BSTNODE *temp)
+{
+  BSTNODE *left = getBSTNODEleft(temp);
+  BSTNODE *right = getBSTNODEright(temp);
+  if (!left && !right) {
+    setAVALheight(getBSTNODEvalue(temp), 0);
+    return;
+  }
+  else if (!right) {
+    setAVALheight(getBSTNODEvalue(temp), findHeight(left)+1);
+    return;
+  }
+  else if (!left) {
+    setAVALheight(getBSTNODEvalue(temp), findHeight(right)+1);
+    return;
+  }
+  else {
+    int l = findHeight(left)+1;
+    int r = findHeight(right)+1;
+    if (r > l) {
+      setAVALheight(getBSTNODEvalue(temp), r);
+    }
+    else {
+      setAVALheight(getBSTNODEvalue(temp), l);
+    }
+  }
+}
+
+
+extern BSTNODE *
+getSibling(BSTNODE *temp)
+{
+  BSTNODE *parent = getBSTNODEparent(temp);
+  if (getBSTNODEleft(parent) == temp) {
+    return getBSTNODEright(parent);
+  }
+  else {
+    return getBSTNODEleft(parent);
+  }
+}
+
+
+extern int
+isLeaf(BSTNODE *temp)
+{
+  BSTNODE *l = getBSTNODEleft(temp);
+  BSTNODE *r = getBSTNODEright(temp);
+  if (!l && !r) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+
+extern void
+setAVALbalance(BSTNODE *temp)
+{
+  BSTNODE *sibling = getSibling(temp);
+  AVAL *atemp = getBSTNODEvalue(temp);
+  if (isLeaf(temp)) {
+    atemp->balance = 0;
+    return;
+  }
+  if (!sibling) {
+    atemp->balance = 1;
+  }
+  AVAL *asib = getBSTNODEvalue(sibling);
+  if (getAVALheight(atemp) > getAVALheight(asib)) {
+    atemp->balance = 1;
+    return;
+  }
+  else if (getAVALheight(atemp) < getAVALvalue(asib)) {
+    atemp->balance = -1;
+    return;
+  }
+  else {
+    atemp->balance = 0;
+  }
+}
+
+
+extern int
+getAVALbalance(BSTNODE *temp)
+{
+  AVAL *atemp = getBSTNODEvalue(temp);
+  return atemp->balance;
 }
 
 
@@ -173,9 +275,27 @@ newAVL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
 
 
 extern void
-insertAVL(AVL *,void *)
+insertAVL(AVL *a,void *value)
 {
-  AVAL
+  AVAL *new = newAVAL(a->display, a->compare, a->free, value);
+  assert(new != 0);
+  if (sizeAVL(a) == 0) {
+    insertBST(a->tree, new);
+    a->size++;
+    return;
+  }
+
+  BSTNODE *temp = findBST(a->tree, new);
+  if (temp) {
+    freeAVAL(new);
+    AVAL *temp2 = getBSTNODEvalue(temp);
+    incrAVALfrequency(temp2);
+    g->size++;
+    return;
+  }
+  else {
+
+  }
 }
 
 
