@@ -102,7 +102,6 @@ decrGVALfrequency(GVAL *temp)
 struct gst
 {
   BST *tree;
-  QUEUE *nodes;
   int size;
   void (*display)(void *, FILE *);
   int (*compare)(void *, void *);
@@ -116,7 +115,6 @@ newGST(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
   GST *g = malloc(sizeof(GST));
   assert(g != 0);
   g->tree       = newBST(displayGVAL,compareGVAL,NULL,freeGVALwhole);
-  // g->nodes      = newQUEUE(d,f);
   g->size       = 0;
   g->display    = d;
   g->compare    = c;
