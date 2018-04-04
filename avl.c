@@ -15,7 +15,7 @@ struct aval
   void (*display)(void *, FILE *);
   int (*compare)(void *, void *);
   void (*free)(void *);
-}
+};
 
 
 extern AVAL *
@@ -148,47 +148,34 @@ setAVALbalance(BSTNODE *temp)
   BSTNODE *l = getBSTNODEleft(temp);
   BSTNODE *r = getBSTNODEright(temp);
   AVAL *atemp = getBSTNODEvalue(temp);
-  // AVAL *al = getBSTNODEvalue(l);
-  // AVAL *ar = getBSTNODEvalue(r);
-  if ((getHeight(l) - getHeight(r) = 0) {
+  if (getHeight(l) - getHeight(r) == 0) {
     clearAVALbalance(atemp);
     return;
   }
   if (getHeight(l) - getHeight(r) > 0) {
     atemp->balance = 1;
-    return
+    return;
   }
   if (getHeight(l) - getHeight(r) < 0) {
     atemp->balance = -1;
+    return;
   }
-  // AVAL *atemp = getBSTNODEvalue(temp);
-  // if (isLeaf(temp)) {
-  //   atemp->balance = 0;
-  //   return;
-  // }
-  // if (!sibling) {
-  //   atemp->balance = 1;
-  // }
-  // AVAL *asib = getBSTNODEvalue(sibling);
-  // if (getAVALheight(atemp) > getAVALheight(asib)) {
-  //   atemp->balance = 1;
-  //   return;
-  // }
-  // else if (getAVALheight(atemp) < getAVALheight(asib)) {
-  //   atemp->balance = -1;
-  //   return;
-  // }
-  // else {
-  //   atemp->balance = 0;
-  // }
+  return;
 }
 
 
 extern int
-getAVALbalance(BSTNODE *temp)
+getAVALbalance(AVAL *temp)
+{
+  return temp->balance;
+}
+
+
+extern int
+getBalance(BSTNODE *temp)
 {
   AVAL *atemp = getBSTNODEvalue(temp);
-  return atemp->balance;
+  return getAVALbalance(atemp);
 }
 
 
@@ -197,11 +184,8 @@ displayAVAL(void *v, FILE *fp)
 {
   AVAL *temp = v;
   temp->display(getAVALvalue(temp), fp);
-  if (getGVALfrequency(temp) > 1) {
+  if (getAVALfrequency(temp) > 1) {
     fprintf(fp, "[%d]", getAVALfrequency(temp));
-  }
-  if (isLeaf(temp)) {
-    return;
   }
   if (getAVALbalance(temp) == 1) {
     fprintf(fp, "+");
@@ -234,9 +218,9 @@ swapperAVAL(BSTNODE *a,BSTNODE *b)
   tb->value = vtemp;
 
   /* swap the counts stored in the AVL value objects */
-  int ctemp = ta->count;
-  ta->count = tb->count;
-  tb->count = ctemp;
+  int ctemp = ta->freq;
+  ta->freq = tb->freq;
+  tb->freq = ctemp;
 
   return;
 }
@@ -283,9 +267,9 @@ struct avl
   BST *tree;
   int size;
   void (*display)(void *, FILE *);
-  void (*compare)(void *, void *);
+  int (*compare)(void *, void *);
   void (*free)(void *);
-}
+};
 
 
 extern AVL *
@@ -319,7 +303,9 @@ insertionFixup(AVL *a, BSTNODE *curr)
       setAVALbalance(curr);
       curr = getBSTNODEparent(curr);
     }
-    else
+    else {
+
+    }
   }
 }
 
@@ -340,13 +326,17 @@ insertAVL(AVL *a,void *value)
     freeAVAL(new);
     AVAL *temp2 = getBSTNODEvalue(temp);
     incrAVALfrequency(temp2);
-    g->size++;
+    a->size++;
     return;
   }
   else {
     BSTNODE *temp3 = insertBST(a->tree, new);
-    g->size++;
-    determineAVALheight(getbstnodep(temp3));
+    a->size++;
+    BSTNODE *curr = temp3;
+    while (curr) {
+      determineAVALheight(getBSTNODEparent(curr));
+      curr = getBSTNODEparent(curr);
+    }
     insertionFixup(a, temp3);
     return;
   }
