@@ -188,7 +188,7 @@ deleteGST(GST *g,void *v)
 {
   GVAL *temp = newGVAL(g->display, g->compare, g->free, v);
   BSTNODE *find = findBST(g->tree, temp);
-  // freeGVAL(temp);
+  freeGVAL(temp);
   if (find) {
     GVAL *temp2 = getBSTNODEvalue(find);
     if (getGVALfrequency(temp2) > 1) {
@@ -203,8 +203,10 @@ deleteGST(GST *g,void *v)
       s--;
       setBSTsize(g->tree, s);
       temp2 = getBSTNODEvalue(delete);
+      void *val = getGVALvalue(temp2);
+      freeBSTNODE(delete, g->free);
       g->size--;
-      return getGVALvalue(temp2);
+      return val;
     }
   }
   return NULL;
