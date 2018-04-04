@@ -63,15 +63,23 @@ compareGVAL(void *v, void *w)
   return temp->compare(getGVALvalue(temp),getGVALvalue(temp2));
 }
 
-
 extern void
 freeGVAL(void *v)
+{
+  free(v);
+  return;
+}
+
+
+extern void
+freeGVALwhole(void *v)
 {
   GVAL *temp = v;
   if (temp->free) {
     temp->free(getGVALvalue(temp));
-    free(temp);
+    freeGVAL(temp);
   }
+  return;
 }
 
 
@@ -107,7 +115,7 @@ newGST(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
 {
   GST *g = malloc(sizeof(GST));
   assert(g != 0);
-  g->tree       = newBST(displayGVAL,compareGVAL,NULL,freeGVAL);
+  g->tree       = newBST(displayGVAL,compareGVAL,NULL,freeGVALwhole);
   // g->root       = 0;
   g->nodes      = newQUEUE(d,f);
   g->size       = 0;
@@ -189,7 +197,7 @@ deleteGST(GST *g,void *v)
       g->size--;
       return NULL;
     }
-    else if (temp2->freq == 1) {
+    else if (getGVALfrequency(temp2) == 1) {
       BSTNODE *delete = swapToLeafBST(g->tree, find);
       pruneLeafBST(g->tree, delete);
       int s = sizeBST(g->tree);
