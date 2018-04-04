@@ -147,14 +147,19 @@ setAVALbalance(BSTNODE *temp)
 {
   BSTNODE *l = getBSTNODEleft(temp);
   BSTNODE *r = getBSTNODEright(temp);
+  AVAL *atemp = getBSTNODEvalue(temp);
   // AVAL *al = getBSTNODEvalue(l);
   // AVAL *ar = getBSTNODEvalue(r);
-  if ((getHeight(l) == getHeight(r)) {
-    clearAVALbalance(temp);
+  if ((getHeight(l) - getHeight(r) = 0) {
+    clearAVALbalance(atemp);
     return;
   }
-  if (getHeight(l) > getHeight(r)) {
-
+  if (getHeight(l) - getHeight(r) > 0) {
+    atemp->balance = 1;
+    return
+  }
+  if (getHeight(l) - getHeight(r) < 0) {
+    atemp->balance = -1;
   }
   // AVAL *atemp = getBSTNODEvalue(temp);
   // if (isLeaf(temp)) {

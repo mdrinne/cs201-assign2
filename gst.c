@@ -206,12 +206,12 @@ deleteGST(GST *g,void *v)
       g->size--;
       return val;
     }
-    else {
-      fprintf(stdout, "Value ");
-      g->display(v,stdout);
-      fprintf(stdout, "not found.\n");
-      return NULL;
-    }
+  }
+  else {
+    fprintf(stdout, "Value ");
+    g->display(v,stdout);
+    fprintf(stdout, "not found.\n");
+    return NULL;
   }
   return NULL;
 }
