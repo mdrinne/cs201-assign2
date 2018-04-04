@@ -457,63 +457,85 @@ insertAVL(AVL *a,void *value)
 
 
 extern int
-findAVLcount(AVL *,void *)
+findAVLcount(AVL *a,void *v)
 {
-
+  AVAL *temp = newAVAL(a->display, a->compare, a->free, v);
+  BSTNODE *find = findBST(a->tree, temp);
+  freeAVAL(temp);
+  if (find) {
+    AVAL *temp2 = getBSTNODEvalue(find);
+    int val = getAVALfrequency(temp2);
+    return val;
+  }
+  return 0;
 }
 
 
 extern void *
-findAVL(AVL *,void *)
+findAVL(AVL *a,void *v)
 {
-
+  AVAL *temp = newAVAL(a->display, a->compare, a->free, v);
+  BSTNODE *find = findBST(a->tree, temp);
+  freeAVAL(temp);
+  if (find) {
+    AVAL *temp2 = getBSTNODEvalue(find);
+    void *val = getAVALvalue(temp2);
+    return val;
+  }
+  return NULL;
 }
 
 
 extern void *
-deleteAVL(AVL *,void *)
+deleteAVL(AVL *a,void *v)
 {
 
 }
 
 
 extern int
-sizeAVL(AVL *)
+sizeAVL(AVL *a)
 {
-
+  return a->size;
 }
 
 
 extern int
-duplicatesAVL(AVL *)
+duplicatesAVL(AVL *a)
 {
-
+  return sizeAVL(a) -sizeBST(a->tree);
 }
 
 
 extern void
-statisticsAVL(AVL *,FILE *)
+statisticsAVL(AVL *a,FILE *fp)
 {
-
+  fprintf(fp, "Duplicates: %d\n", duplicatesAVL(a));
+  statisticsBST(a->tree, fp);
+  return;
 }
 
 
 extern void
-displayAVL(AVL *,FILE *)
+displayAVL(AVL *a,FILE *fp)
 {
-
+  displayBSTdecorated(a->tree, fp);
+  return;
 }
 
 
 extern void
-displayAVLdebug(AVL *,FILE *)
+displayAVLdebug(AVL *a,FILE *fp)
 {
-
+  displayBST(a->tree, fp);
+  return;
 }
 
 
 extern void
-freeAVL(AVL *)
+freeAVL(AVL *a)
 {
-
+  freeBST(a->tree);
+  free(a);
+  return;
 }

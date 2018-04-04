@@ -155,10 +155,10 @@ findGSTcount(GST *g,void *v)
 {
   GVAL *temp = newGVAL(g->display, g->compare, g->free, v);
   BSTNODE *find = findBST(g->tree, temp);
+  freeGVAL(temp);
   if (find) {
     GVAL *temp2 = getBSTNODEvalue(find);
     int val = getGVALfrequency(temp2);
-    freeGVAL(temp);
     return val;
   }
   return 0;
@@ -244,6 +244,7 @@ extern void
 displayGST(GST *g,FILE *fp)
 {
   displayBSTdecorated(g->tree, fp);
+  return;
 }
 
 
