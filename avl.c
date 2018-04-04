@@ -18,9 +18,98 @@ struct aval
 
 
 extern AVL *
-newAVL(void (*)(void *,FILE *),int (*)(void *,void *),void (*)(void *))
+newAVL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *), void *value)
+{
+  AVAL *new = malloc(sizeof(AVAL));
+  assert(new != 0);
+  new->value = value;
+  new->freq = 1;
+  new->height = 0;
+  new->display   = d;
+  new->compare   = c;
+  new->free      = f;
+  return new;
+}
+
+
+extern void *
+getAVALvalue(AVAL *temp)
+{
+  return temp->value;
+}
+
+
+extern int
+getAVALfrequency(AVAL *temp)
+{
+  return temp->freq;
+}
+
+
+extern int
+getAVALheight(AVAL *temp)
+{
+  return temp->height;
+}
+
+
+extern void
+displayAVAL(void *v, FILE *fp)
 {
 
+}
+
+
+extern int
+compareAVAL(void *v, void *w)
+{
+  AVAL *temp  = v;
+  AVAL *temp2 = w;
+  return temp->compare(getAVALvalue(temp),getAVALvalue(temp2));
+}
+
+
+extern void
+freeAVAL(void *v)
+{
+  free(v);
+  return;
+}
+
+
+extern void
+freeAVALwhole(void *v)
+{
+  AVAL *temp = v;
+  if (temp->free) {
+    temp->free(getAVALvalue(temp));
+    freeAVAL(temp);
+  }
+  return;
+}
+
+
+extern void
+incrAVALfrequency(AVAL *temp)
+{
+  temp->freq++;
+  return;
+}
+
+
+extern void
+decrAVALfrequency(AVAL *temp)
+{
+  temp->freq--;
+  return;
+}
+
+
+extern void
+setAVALheight(AVAL *temp, int h)
+{
+  temp->height = h;
+  return;
 }
 
 
