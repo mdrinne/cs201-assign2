@@ -22,9 +22,9 @@ newAVL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *), void 
 {
   AVAL *new = malloc(sizeof(AVAL));
   assert(new != 0);
-  new->value = value;
-  new->freq = 1;
-  new->height = 0;
+  new->value     = value;
+  new->freq      = 1;
+  new->height    = 0;
   new->display   = d;
   new->compare   = c;
   new->free      = f;
@@ -66,6 +66,26 @@ compareAVAL(void *v, void *w)
   AVAL *temp  = v;
   AVAL *temp2 = w;
   return temp->compare(getAVALvalue(temp),getAVALvalue(temp2));
+}
+
+
+extern void
+swapperAVAL(BSTNODE *a,BSTNODE *b)
+{
+  AVAL *ta = getBSTNODEvalue(a);
+  AVAL *tb = getBSTNODEvalue(b);
+
+  /* swap the values stored in the AVL value objects */
+  void *vtemp = ta->value;
+  ta->value = tb->value;
+  tb->value = vtemp;
+
+  /* swap the counts stored in the AVL value objects */
+  int ctemp = ta->count;
+  ta->count = tb->count;
+  tb->count = ctemp;
+
+  return;
 }
 
 
@@ -113,10 +133,34 @@ setAVALheight(AVAL *temp, int h)
 }
 
 
+struct avl
+{
+  BST *tree;
+  int size;
+  void (*display)(void *, FILE *);
+  void (*compare)(void *, void *);
+  void (*free)(void *);
+}
+
+
+extern AVL *
+newAVL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
+{
+  AVL *a = malloc(sizeof(AVL));
+  assert(a != 0);
+  a->tree = newBST(displayAVAL,compareAVAL,swapperAVAL,freeAVALwhole);
+  a->size = 0;
+  a->display    = d;
+  a->compare    = c;
+  a->free       = f;
+  return a;
+}
+
+
 extern void
 insertAVL(AVL *,void *)
 {
-
+  AVAL
 }
 
 
