@@ -133,6 +133,21 @@ setAVALheight(AVAL *temp, int h)
 }
 
 
+extern void
+incrAVALheight(AVAL *temp)
+{
+  temp->height++;
+  return;
+}
+
+extern void
+decrAVALheight(AVAL *temp)
+{
+  temp->height--;
+  return;
+}
+
+
 struct avl
 {
   BST *tree;
