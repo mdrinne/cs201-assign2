@@ -51,6 +51,9 @@ getAVALfrequency(AVAL *temp)
 extern int
 getAVALheight(AVAL *temp)
 {
+  if (!temp) {
+    return -1;
+  }
   return temp->height;
 }
 
@@ -60,6 +63,17 @@ setAVALheight(AVAL*temp, int h)
 {
   temp->height = h;
   return;
+}
+
+
+extern int
+getHeight(BSTNODE *temp)
+{
+  AVAL *temp2 = getBSTNODEvalue(temp);
+  if (!temp2) {
+    return -1;
+  }
+  return getAVALheight(temp2);
 }
 
 
@@ -73,16 +87,16 @@ determineAVALheight(BSTNODE *temp)
     return;
   }
   else if (!right) {
-    setAVALheight(getBSTNODEvalue(temp), findHeight(left)+1);
+    setAVALheight(getBSTNODEvalue(temp), getHeight(left)+1);
     return;
   }
   else if (!left) {
-    setAVALheight(getBSTNODEvalue(temp), findHeight(right)+1);
+    setAVALheight(getBSTNODEvalue(temp), getHeight(right)+1);
     return;
   }
   else {
-    int l = findHeight(left)+1;
-    int r = findHeight(right)+1;
+    int l = getHeight(left)+1;
+    int r = getHeight(right)+1;
     if (r > l) {
       setAVALheight(getBSTNODEvalue(temp), r);
     }
@@ -121,29 +135,47 @@ isLeaf(BSTNODE *temp)
 
 
 extern void
+clearAVALbalance(AVAL *temp)
+{
+  temp->balance = 0;
+  return;
+}
+
+
+extern void
 setAVALbalance(BSTNODE *temp)
 {
-  BSTNODE *sibling = getSibling(temp);
-  AVAL *atemp = getBSTNODEvalue(temp);
-  if (isLeaf(temp)) {
-    atemp->balance = 0;
+  BSTNODE *l = getBSTNODEleft(temp);
+  BSTNODE *r = getBSTNODEright(temp);
+  // AVAL *al = getBSTNODEvalue(l);
+  // AVAL *ar = getBSTNODEvalue(r);
+  if ((getHeight(l) == getHeight(r)) {
+    clearAVALbalance(temp);
     return;
   }
-  if (!sibling) {
-    atemp->balance = 1;
+  if (getHeight(l) > getHeight(r)) {
+
   }
-  AVAL *asib = getBSTNODEvalue(sibling);
-  if (getAVALheight(atemp) > getAVALheight(asib)) {
-    atemp->balance = 1;
-    return;
-  }
-  else if (getAVALheight(atemp) < getAVALvalue(asib)) {
-    atemp->balance = -1;
-    return;
-  }
-  else {
-    atemp->balance = 0;
-  }
+  // AVAL *atemp = getBSTNODEvalue(temp);
+  // if (isLeaf(temp)) {
+  //   atemp->balance = 0;
+  //   return;
+  // }
+  // if (!sibling) {
+  //   atemp->balance = 1;
+  // }
+  // AVAL *asib = getBSTNODEvalue(sibling);
+  // if (getAVALheight(atemp) > getAVALheight(asib)) {
+  //   atemp->balance = 1;
+  //   return;
+  // }
+  // else if (getAVALheight(atemp) < getAVALheight(asib)) {
+  //   atemp->balance = -1;
+  //   return;
+  // }
+  // else {
+  //   atemp->balance = 0;
+  // }
 }
 
 
@@ -162,6 +194,9 @@ displayAVAL(void *v, FILE *fp)
   temp->display(getAVALvalue(temp), fp);
   if (getGVALfrequency(temp) > 1) {
     fprintf(fp, "[%d]", getAVALfrequency(temp));
+  }
+  if (isLeaf(temp)) {
+    return;
   }
   if (getAVALbalance(temp) == 1) {
     fprintf(fp, "+");
@@ -238,29 +273,6 @@ decrAVALfrequency(AVAL *temp)
 }
 
 
-extern void
-setAVALheight(AVAL *temp, int h)
-{
-  temp->height = h;
-  return;
-}
-
-
-extern void
-incrAVALheight(AVAL *temp)
-{
-  temp->height++;
-  return;
-}
-
-extern void
-decrAVALheight(AVAL *temp)
-{
-  temp->height--;
-  return;
-}
-
-
 struct avl
 {
   BST *tree;
@@ -286,6 +298,28 @@ newAVL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
 
 
 extern void
+insertionFixup(AVL *a, BSTNODE *curr)
+{
+  while (1) {
+    BSTNODE *sibling = getSibling(curr);
+    AVAL *sib = getBSTNODEvalue(sibling);
+    if (getBSTroot(a->tree) == curr) {
+      return;
+    }
+    else if (getAVALbalance(sib) == 1) {
+      clearAVALbalance(sib);
+      return;
+    }
+    else if (!sibling) {
+      setAVALbalance(curr);
+      curr = getBSTNODEparent(curr);
+    }
+    else
+  }
+}
+
+
+extern void
 insertAVL(AVL *a,void *value)
 {
   AVAL *new = newAVAL(a->display, a->compare, a->free, value);
@@ -305,7 +339,11 @@ insertAVL(AVL *a,void *value)
     return;
   }
   else {
-
+    BSTNODE *temp3 = insertBST(a->tree, new);
+    g->size++;
+    determineAVALheight(getbstnodep(temp3));
+    insertionFixup(a, temp3);
+    return;
   }
 }
 

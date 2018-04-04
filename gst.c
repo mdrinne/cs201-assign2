@@ -206,6 +206,12 @@ deleteGST(GST *g,void *v)
       g->size--;
       return val;
     }
+    else {
+      fprintf(stdout, "Value ");
+      g->display(v,stdout);
+      fprintf(stdout, "not found.\n");
+      return NULL;
+    }
   }
   return NULL;
 }
@@ -256,3 +262,45 @@ freeGST(GST *g)
   free(g);
   return;
 }
+
+
+
+// function insertionFixup(x)
+//         {
+//         loop
+//             {
+//             if (x is the root)
+//                 exit the loop
+//             else if (parent favors the sibling)        //case 1
+//                 {
+//                 set the balance of parent
+//                 exit the loop
+//                 }
+//             else if (parent has no favorite)           //case 2
+//                 {
+//                 set the balance of parent
+//                 x = parent
+//                 //continue looping
+//                 }
+//             else //parent favors x
+//                 {
+//                 y = the favorite child of x
+//                 p = parent of x
+//                 if (y exists and y,x,p are not linear) //case 3
+//                     {
+//                     rotate y to x
+//                     rotate y to p
+//                     set the balance of x
+//                     set the balance of p
+//                     set the balance of y
+//                     }
+//                 else                                   //case 4
+//                     {
+//                     rotate x to p
+//                     set the balance of p
+//                     set the balance of x
+//                     }
+//                 exit the loop
+//                 }
+//             }
+//         }
