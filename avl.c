@@ -77,14 +77,10 @@ setHeight(BSTNODE *temp, int h)
 extern int
 getHeight(BSTNODE *temp)
 {
-  // printf("in getHeight\n");
   if (!temp) {
-    // printf("node did not exist\n");
     return -1;
   }
   AVAL *temp2 = getBSTNODEvalue(temp);
-  // printf("retreived aval\n");
-  // printf("calling to getavalheight\n");
   return getAVALheight(temp2);
 }
 
@@ -95,28 +91,28 @@ determineAVALheight(BSTNODE *temp)
   // printf("in heigth updater\n");
   BSTNODE *left = getBSTNODEleft(temp);
   BSTNODE *right = getBSTNODEright(temp);
-  if (!left && !right) {
-    setAVALheight(getBSTNODEvalue(temp), 0);
-    return;
-  }
-  else if (!right) {
-    setAVALheight(getBSTNODEvalue(temp), getHeight(left)+1);
-    return;
-  }
-  else if (!left) {
-    setAVALheight(getBSTNODEvalue(temp), getHeight(right)+1);
-    return;
-  }
-  else {
+  // if (!left && !right) {
+  //   setHeight(temp, 0);
+  //   return;
+  // }
+  // else if (!right) {
+  //   setHeight(temp, getHeight(left)+1);
+  //   return;
+  // }
+  // else if (!left) {
+  //   setHeight(temp, getHeight(right)+1);
+  //   return;
+  // }
+  // else {
     int l = getHeight(left)+1;
     int r = getHeight(right)+1;
     if (r > l) {
-      setAVALheight(getBSTNODEvalue(temp), r);
+      setHeight(temp, r);
     }
     else {
-      setAVALheight(getBSTNODEvalue(temp), l);
+      setHeight(temp, l);
     }
-  }
+  // }
 }
 
 
@@ -327,7 +323,7 @@ getFavoriteChild(BSTNODE *temp)
 extern int
 checkLinear(BSTNODE *child, BSTNODE *parent, BSTNODE *gparent)
 {
-  printf("CHECKING IF LINEAR!!!!!!!!!!!!!!!!!!!!\n");
+  // printf("CHECKING IF LINEAR!!!!!!!!!!!!!!!!!!!!\n");
   /* check if linear left */
   if (getBSTNODEleft(parent) == child) {
     if (getBSTNODEleft(gparent) == parent) {
@@ -463,9 +459,9 @@ insertionFixup(AVL *a, BSTNODE *curr)
         // printf("nodes are not linear\n");
         rotate(y, curr);
         rotate(y, parent);
-        determineAVALheight(curr);
-        determineAVALheight(parent);
-        determineAVALheight(y);
+        // determineAVALheight(curr);
+        // determineAVALheight(parent);
+        // determineAVALheight(y);
         setAVALbalance(curr);
         setAVALbalance(parent);
         setAVALbalance(y);
@@ -474,8 +470,8 @@ insertionFixup(AVL *a, BSTNODE *curr)
         // printf("nodes are linear\n");
         // displayAVL(a, stdout);
         rotate(curr, parent);
-        determineAVALheight(parent);
-        determineAVALheight(curr);
+        // determineAVALheight(parent);
+        // determineAVALheight(curr);
         setAVALbalance(parent);
         setAVALbalance(curr);
       }
@@ -517,10 +513,10 @@ insertAVL(AVL *a,void *value)
     // printf("updating heights\n");
     BSTNODE *curr = getBSTNODEparent(temp3);
     // while (curr != getBSTroot(a->tree)) {
-    while (curr) {
+    // while (curr) {
       determineAVALheight(curr);
-      curr = getBSTNODEparent(curr);
-    }
+      // curr = getBSTNODEparent(curr);
+    // }
     insertionFixup(a, temp3);
     return;
   }

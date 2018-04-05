@@ -497,7 +497,7 @@ displayBSTdecoratedhelper(BST *t, FILE *fp, int count, int level) {
       fprintf(fp, "=");
     }
     t->display(curr->value, fp);
-    if (!getBSTNODEparent(curr)) {
+    if (curr == getBSTroot(t)) {
       fprintf(fp,"(");
       t->display(getBSTNODEvalue(curr), fp);
       fprintf(fp, ")X");
