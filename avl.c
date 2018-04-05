@@ -424,54 +424,36 @@ rotate(BSTNODE *child, BSTNODE *parent)
 extern void
 insertionFixup(AVL *a, BSTNODE *curr)
 {
-  // printf("in insertion fixup\n");
   while (curr) {
-    // printf("in while loop\n");
     BSTNODE *sibling = getSibling(curr);
     BSTNODE *parent = getBSTNODEparent(curr);
     if (curr == getBSTroot(a->tree)) {
-      // printf("node is root, nothing to be done\n");
       return;
     }
-    // else if (getHeight(sibling) > getHeight(curr)) {
-    else if (sibling) {
-      // printf("sibling was favorable, setting parent balance and returning\n");
+    else if (sibling == getFavoriteChild(parent)) {
       setAVALbalance(parent);
       return;
     }
-    else if (getBalance(parent) == 0) {
-      // printf("parent is balanced, updating parent balance and relooping with parent\n");
+    else if (getFavoriteChild(parent) == NULL) {
       setAVALbalance(parent);
-      // printf("parent re balanced\n");
-      // printf("curr = parent\n");
       curr = getBSTNODEparent(curr);
-      // if (curr == getBSTroot(a->tree)) {
-      //   printf("NOW AT ROOT\n");
-      // }
     }
     else {
-      // printf("must do rotations\n");
       BSTNODE *y = getFavoriteChild(curr);
-      if (!y) {
-        // printf("NO FAVORITE CHILD\n");
-      }
       if (y && (checkLinear(y,curr,parent) == 0)) {
-        // printf("nodes are not linear\n");
         rotate(y, curr);
         rotate(y, parent);
-        // determineAVALheight(curr);
-        // determineAVALheight(parent);
-        // determineAVALheight(y);
+        determineAVALheight(y);
+        determineAVALheight(curr);
+        determineAVALheight(parent);
         setAVALbalance(curr);
         setAVALbalance(parent);
         setAVALbalance(y);
       }
       else {
-        // printf("nodes are linear\n");
-        // displayAVL(a, stdout);
         rotate(curr, parent);
-        // determineAVALheight(parent);
-        // determineAVALheight(curr);
+        determineAVALheight(curr);
+        determineAVALheight(parent);
         setAVALbalance(parent);
         setAVALbalance(curr);
       }
@@ -563,15 +545,11 @@ deleteFixup(AVL *a, BSTNODE *curr)
     if (curr == getBSTroot(a->tree)) {
       return;
     }
-    else if ((getBalance(parent) == 1) && (curr == getBSTNODEleft(parent))) {
+    else if (curr == getFavoriteChild(parent)) {
       setAVALbalance(parent);
       curr = parent;
     }
-    else if ((getBalance(parent) == -1) && (curr == getBSTNODEright(parent))) {
-      setAVALbalance(parent);
-      curr = parent;
-    }
-    else if (getBalance(parent) == 0) {
+    else if (getFavoriteChild(parent) == NULL) {
       setAVALbalance(parent);
       return;
     }
@@ -581,15 +559,15 @@ deleteFixup(AVL *a, BSTNODE *curr)
       if (y && (checkLinear(y, sibling, parent) == 0)) {
         rotate(y, sibling);
         rotate(y, parent);
-        setAVALbalance(parent);
-        setAVALbalance(sibling);
         setAVALbalance(y);
+        setAVALbalance(sibling);
+        setAVALbalance(parent);
         curr = y;
       }
       else {
         rotate(sibling, parent);
-        setAVALbalance(parent);
         setAVALbalance(sibling);
+        setAVALbalance(parent);
         if (!y) {
           return;
         }
