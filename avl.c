@@ -70,7 +70,7 @@ extern void
 setHeight(BSTNODE *temp, int h)
 {
   AVAL *temp2 = getBSTNODEvalue(temp);
-  return getAVALheight(temp2, h);
+  return setAVALheight(temp2, h);
 }
 
 
@@ -560,7 +560,47 @@ findAVL(AVL *a,void *v)
 extern void
 deleteFixup(AVL *a, BSTNODE *curr)
 {
-
+  // setHeight(curr, 0);
+  while (curr) {
+    // BSTNODE *sibling = getSibling(curr);
+    BSTNODE *parent = getBSTNODEparent(curr);
+    if (curr == getBSTroot(a->tree)) {
+      return;
+    }
+    else if ((getBalance(parent) == 1) && (curr == getBSTNODEleft(parent))) {
+      setAVALbalance(parent);
+      curr = parent;
+    }
+    else if ((getBalance(parent) == -1) && (curr == getBSTNODEright(parent))) {
+      setAVALbalance(parent);
+      curr = parent;
+    }
+    else if (getBalance(parent) == 0) {
+      setAVALbalance(parent);
+      return;
+    }
+    else {
+      BSTNODE *sibling = getSibling(curr);
+      BSTNODE *y = getFavoriteChild(sibling);
+      if (y && (checkLinear(y, sibling, parent) == 0)) {
+        rotate(y, sibling);
+        rotate(y, parent);
+        setAVALbalance(parent);
+        setAVALbalance(sibling);
+        setAVALbalance(y);
+        curr = y;
+      }
+      else {
+        rotate(sibling, parent);
+        setAVALbalance(parent);
+        setAVALbalance(sibling);
+        if (!y) {
+          return;
+        }
+        curr = sibling;
+      }
+    }
+  }
 }
 
 
@@ -571,7 +611,7 @@ deleteAVL(AVL *a,void *v)
   BSTNODE *find = findBST(a->tree, temp);
   freeAVAL(temp);
   if (find) {
-    GVAL *temp2 = getBSTNODEvalue(find);
+    AVAL *temp2 = getBSTNODEvalue(find);
     if (getAVALfrequency(temp2) > 1) {
       decrAVALfrequency(temp2);
       a->size--;
@@ -579,9 +619,25 @@ deleteAVL(AVL *a,void *v)
     }
     else if (getAVALfrequency(temp2) == 1) {
       BSTNODE *delete = swapToLeafBST(a->tree, find);
-      deleteFixup(delete);
+      deleteFixup(a, delete);
+      pruneLeafBST(a->tree, delete);
+      int s = sizeBST(a->tree);
+      s--;
+      setBSTsize(a->tree, s);
+      temp2 = getBSTNODEvalue(delete);
+      void *val = getAVALvalue(temp2);
+      freeBSTNODE(delete, a->free);
+      a->size--;
+      return val;
     }
   }
+  else {
+    fprintf(stdout, "Value ");
+    a->display(v, stdout);
+    fprintf(stdout, " not found.\n");
+    return NULL;
+  }
+  return NULL;
 }
 
 

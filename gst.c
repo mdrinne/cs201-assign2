@@ -210,7 +210,7 @@ deleteGST(GST *g,void *v)
   else {
     fprintf(stdout, "Value ");
     g->display(v,stdout);
-    fprintf(stdout, "not found.\n");
+    fprintf(stdout, " not found.\n");
     return NULL;
   }
   return NULL;
