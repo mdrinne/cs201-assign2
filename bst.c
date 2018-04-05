@@ -273,11 +273,16 @@ swapToLeafBST(BST *t,BSTNODE *node) {
         node = node->right;
       }
     }
-
-    void *temp = swapwith->value;
-    swapwith->value = node->value;
-    node->value = temp;
-    return swapToLeafBST(t, node);
+    if (t->swapper == 0) {
+      void *temp = swapwith->value;
+      swapwith->value = node->value;
+      node->value = temp;
+      return swapToLeafBST(t, node);
+    }
+    else {
+      t->swapper(swapwith, node);
+      return swapToLeafBST(t, node);
+    }
   }
 }
 

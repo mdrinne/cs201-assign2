@@ -552,7 +552,20 @@ findAVL(AVL *a,void *v)
 extern void *
 deleteAVL(AVL *a,void *v)
 {
+  AVAL *temp = newAVAL(a->display, a->compare, a->free, v);
+  BSTNODE *find = findBST(a->tree, temp);
+  freeAVAL(temp);
+  if (find) {
+    GVAL *temp2 = getBSTNODEvalue(find);
+    if (getAVALfrequency(temp2) > 1) {
+      decrAVALfrequency(temp2);
+      a->size--;
+      return NULL;
+    }
+    else if (getAVALfrequency(temp2) == 1) {
 
+    }
+  }
 }
 
 
