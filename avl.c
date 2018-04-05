@@ -59,10 +59,18 @@ getAVALheight(AVAL *temp)
 
 
 extern void
-setAVALheight(AVAL*temp, int h)
+setAVALheight(AVAL *temp, int h)
 {
   temp->height = h;
   return;
+}
+
+
+extern void
+setHeight(BSTNODE *temp, int h)
+{
+  AVAL *temp2 = getBSTNODEvalue(temp);
+  return getAVALheight(temp2, h);
 }
 
 
@@ -549,6 +557,13 @@ findAVL(AVL *a,void *v)
 }
 
 
+extern void
+deleteFixup(AVL *a, BSTNODE *curr)
+{
+
+}
+
+
 extern void *
 deleteAVL(AVL *a,void *v)
 {
@@ -563,7 +578,8 @@ deleteAVL(AVL *a,void *v)
       return NULL;
     }
     else if (getAVALfrequency(temp2) == 1) {
-
+      BSTNODE *delete = swapToLeafBST(a->tree, find);
+      deleteFixup(delete);
     }
   }
 }
