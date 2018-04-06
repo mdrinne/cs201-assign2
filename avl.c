@@ -11,7 +11,9 @@ struct aval
   void *value;
   int freq;
   int height;
-  int balance;
+  // int balance;
+  int lefth;
+  int righth;
   void (*display)(void *, FILE *);
   int (*compare)(void *, void *);
   void (*free)(void *);
@@ -26,7 +28,9 @@ newAVAL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *), void
   new->value       = value;
   new->freq        = 1;
   new->height      = 0;
-  new->balance     = 0;
+  // new->balance     = 0;
+  new->lefth       = 0;
+  new->righth      = 0;
   new->display     = d;
   new->compare     = c;
   new->free        = f;
@@ -58,6 +62,17 @@ getAVALheight(AVAL *temp)
 }
 
 
+extern int
+getHeight(BSTNODE *temp)
+{
+  if (!temp) {
+    return -1;
+  }
+  AVAL *temp2 = getBSTNODEvalue(temp);
+  return getAVALheight(temp2);
+}
+
+
 extern void
 setAVALheight(AVAL *temp, int h)
 {
@@ -74,46 +89,39 @@ setHeight(BSTNODE *temp, int h)
 }
 
 
-extern int
-getHeight(BSTNODE *temp)
+extern void
+setLeftHeight(BSTNODE *temp, int lh)
 {
-  if (!temp) {
-    return -1;
-  }
   AVAL *temp2 = getBSTNODEvalue(temp);
-  return getAVALheight(temp2);
+  temp2->lefth = lh;
+  return;
 }
 
 
 extern void
-determineAVALheight(BSTNODE *temp)
+setRightHeight(BSTNODE *temp, int rh)
 {
-  // printf("in heigth updater\n");
-  BSTNODE *left = getBSTNODEleft(temp);
-  BSTNODE *right = getBSTNODEright(temp);
-  // if (!left && !right) {
-  //   setHeight(temp, 0);
-  //   return;
-  // }
-  // else if (!right) {
-  //   setHeight(temp, getHeight(left)+1);
-  //   return;
-  // }
-  // else if (!left) {
-  //   setHeight(temp, getHeight(right)+1);
-  //   return;
-  // }
-  // else {
-    int l = getHeight(left)+1;
-    int r = getHeight(right)+1;
-    if (r > l) {
-      setHeight(temp, r);
-    }
-    else {
-      setHeight(temp, l);
-    }
-  // }
+  AVAL *temp2 = getBSTNODEvalue(temp);
+  temp2->righth = rh;
+  return;
 }
+
+// extern void
+// determineAVALheight(BSTNODE *temp)
+// {
+//   // printf("in heigth updater\n");
+//   BSTNODE *left = getBSTNODEleft(temp);
+//   BSTNODE *right = getBSTNODEright(temp);
+//   int l = getHeight(left)+1;
+//   int r = getHeight(right)+1;
+//   if (r > l) {
+//     setHeight(temp, r);
+//   }
+//   else {
+//     setHeight(temp, l);
+//   }
+//   return;
+// }
 
 
 extern BSTNODE *
@@ -148,54 +156,93 @@ getSibling(BSTNODE *temp)
 // }
 
 
-extern void
-clearAVALbalance(AVAL *temp)
-{
-  temp->balance = 0;
-  return;
-}
+// extern void
+// clearAVALbalance(AVAL *temp)
+// {
+//   temp->balance = 0;
+//   return;
+// }
 
 
-extern void
-setAVALbalance(BSTNODE *temp)
-{
-  // printf("in setavalbalance\n");
-  BSTNODE *l = getBSTNODEleft(temp);
-  BSTNODE *r = getBSTNODEright(temp);
-  AVAL *atemp = getBSTNODEvalue(temp);
-  if (getHeight(l) - getHeight(r) == 0) {
-    clearAVALbalance(atemp);
-    // printf("leaving setAVALbalance\n");
-    return;
-  }
-  else if (getHeight(l) - getHeight(r) == 1) {
-    atemp->balance = 1;
-    // printf("leaving setAVALbalance\n");
-    return;
-  }
-  else if (getHeight(l) - getHeight(r) == -1) {
-    atemp->balance = -1;
-    // printf("leaving setAVALbalance\n");
-    return;
-  }
-  // printf("leaving setAVALbalance\n");
-  return;
-}
+// extern void
+// setAVALbalance(BSTNODE *temp)
+// {
+//   // printf("in setavalbalance\n");
+//   BSTNODE *l = getBSTNODEleft(temp);
+//   BSTNODE *r = getBSTNODEright(temp);
+//   AVAL *atemp = getBSTNODEvalue(temp);
+//   if (getHeight(l) - getHeight(r) == 0) {
+//     clearAVALbalance(atemp);
+//     // printf("leaving setAVALbalance\n");
+//     return;
+//   }
+//   else if (getHeight(l) - getHeight(r) == 1) {
+//     atemp->balance = 1;
+//     // printf("leaving setAVALbalance\n");
+//     return;
+//   }
+//   else if (getHeight(l) - getHeight(r) == -1) {
+//     atemp->balance = -1;
+//     // printf("leaving setAVALbalance\n");
+//     return;
+//   }
+//   // printf("leaving setAVALbalance\n");
+//   return;
+// }
 
 
 extern int
 getAVALbalance(AVAL *temp)
 {
-  return temp->balance;
+  return temp->lefth - temp->righth;
 }
-
 
 extern int
 getBalance(BSTNODE *temp)
 {
-  AVAL *atemp = getBSTNODEvalue(temp);
-  return getAVALbalance(atemp);
+  AVAL *temp2 = getBSTNODEvalue(temp);
+  return getAVALbalance(temp2);
 }
+
+
+extern int
+getMax(int a, int b)
+{
+  if (a > b) {
+    return a;
+  }
+  else {
+    return b;
+  }
+}
+
+
+extern void
+setBalance(BSTNODE *temp)
+{
+  BSTNODE *left = getBSTNODEleft(temp);
+  BSTNODE *right = getBSTNODEright(temp);
+  setLeftHeight(temp, getHeight(left)+1);
+  setRightHeight(temp, getHeight(right)+1);
+  AVAL *temp2 = getBSTNODEvalue(temp);
+  setHeight(temp, getMax(temp2->lefth, temp2->righth));
+  return;
+}
+
+
+// extern int
+// getAVALbalance(AVAL *temp)
+// {
+//   return temp->balance;
+// }
+
+
+// extern int
+// getBalance(BSTNODE *temp)
+// {
+//   AVAL *atemp = getBSTNODEvalue(temp);
+//   return getAVALbalance(atemp);
+// }
 
 
 extern void
@@ -308,10 +355,10 @@ newAVL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
 extern BSTNODE *
 getFavoriteChild(BSTNODE *temp)
 {
-  if (getBalance(temp) == 1) {
+  if (getBalance(temp) >= 1) {
     return getBSTNODEleft(temp);
   }
-  else if (getBalance(temp) == -1){
+  else if (getBalance(temp) <= -1){
     return getBSTNODEright(temp);
   }
   else {
@@ -431,11 +478,11 @@ insertionFixup(AVL *a, BSTNODE *curr)
       return;
     }
     else if (sibling == getFavoriteChild(parent)) {
-      setAVALbalance(parent);
+      setBalance(parent);
       return;
     }
     else if (getFavoriteChild(parent) == NULL) {
-      setAVALbalance(parent);
+      setBalance(parent);
       curr = getBSTNODEparent(curr);
     }
     else {
@@ -443,19 +490,14 @@ insertionFixup(AVL *a, BSTNODE *curr)
       if (y && (checkLinear(y,curr,parent) == 0)) {
         rotate(y, curr);
         rotate(y, parent);
-        determineAVALheight(y);
-        determineAVALheight(curr);
-        determineAVALheight(parent);
-        setAVALbalance(curr);
-        setAVALbalance(parent);
-        setAVALbalance(y);
+        setBalance(curr);
+        setBalance(parent);
+        setBalance(y);
       }
       else {
         rotate(curr, parent);
-        determineAVALheight(curr);
-        determineAVALheight(parent);
-        setAVALbalance(parent);
-        setAVALbalance(curr);
+        setBalance(parent);
+        setBalance(curr);
       }
       return;
     }
@@ -493,11 +535,11 @@ insertAVL(AVL *a,void *value)
     a->size++;
     // printf("new node inserted\n");
     // printf("updating heights\n");
-    BSTNODE *curr = getBSTNODEparent(temp3);
+    // BSTNODE *curr = getBSTNODEparent(temp3);
     // while (curr != getBSTroot(a->tree)) {
     // while (curr) {
-      determineAVALheight(curr);
-      // curr = getBSTNODEparent(curr);
+    //   determineAVALheight(curr);
+    //   curr = getBSTNODEparent(curr);
     // }
     insertionFixup(a, temp3);
     return;
@@ -538,19 +580,18 @@ findAVL(AVL *a,void *v)
 extern void
 deleteFixup(AVL *a, BSTNODE *curr)
 {
-  // setHeight(curr, 0);
+  setHeight(curr, 0);
   while (curr) {
-    // BSTNODE *sibling = getSibling(curr);
     BSTNODE *parent = getBSTNODEparent(curr);
     if (curr == getBSTroot(a->tree)) {
       return;
     }
     else if (curr == getFavoriteChild(parent)) {
-      setAVALbalance(parent);
+      setBalance(parent);
       curr = parent;
     }
     else if (getFavoriteChild(parent) == NULL) {
-      setAVALbalance(parent);
+      setBalance(parent);
       return;
     }
     else {
@@ -559,15 +600,15 @@ deleteFixup(AVL *a, BSTNODE *curr)
       if (y && (checkLinear(y, sibling, parent) == 0)) {
         rotate(y, sibling);
         rotate(y, parent);
-        setAVALbalance(y);
-        setAVALbalance(sibling);
-        setAVALbalance(parent);
+        setBalance(parent);
+        setBalance(sibling);
+        setBalance(y);
         curr = y;
       }
       else {
         rotate(sibling, parent);
-        setAVALbalance(sibling);
-        setAVALbalance(parent);
+        setBalance(parent);
+        setBalance(sibling);
         if (!y) {
           return;
         }
