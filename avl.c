@@ -634,11 +634,11 @@ deleteAVL(AVL *a,void *v)
     }
     else if (getAVALfrequency(temp2) == 1) {
       BSTNODE *delete = swapToLeafBST(a->tree, find);
-      deleteFixup(a, delete);
       pruneLeafBST(a->tree, delete);
       int s = sizeBST(a->tree);
       s--;
       setBSTsize(a->tree, s);
+      deleteFixup(a, delete);
       temp2 = getBSTNODEvalue(delete);
       void *val = getAVALvalue(temp2);
       freeBSTNODE(delete, a->free);
