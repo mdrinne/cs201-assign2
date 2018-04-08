@@ -370,7 +370,6 @@ getFavoriteChild(BSTNODE *temp)
 extern int
 checkLinear(BSTNODE *child, BSTNODE *parent, BSTNODE *gparent)
 {
-  // printf("CHECKING IF LINEAR!!!!!!!!!!!!!!!!!!!!\n");
   /* check if linear left */
   if (getBSTNODEleft(parent) == child) {
     if (getBSTNODEleft(gparent) == parent) {
@@ -416,41 +415,11 @@ rotateRight(AVL *a, BSTNODE *child, BSTNODE *parent)
   setBSTNODEparent(parent, child);
   return;
 }
-// {
-//   // printf("in rotate right\n");
-//   BSTNODE *childr = getBSTNODEright(child);
-//   BSTNODE *gparent = getBSTNODEparent(parent);
-//   // printf("found childs right child, and gparent\n");
-//   // if (gparent == NULL) {
-//   //   printf("gparent does not exist\n");
-//   // }
-//   if (getBSTNODEleft(gparent) == parent) {
-//     setBSTNODEleft(gparent, child);
-//     // printf("set gparent's left chidl\n");
-//   }
-//   else {
-//     setBSTNODEright(gparent, child);
-//   }
-//   setBSTNODEparent(child, gparent);
-//   setBSTNODEright(child, parent);
-//   setBSTNODEparent(parent, child);
-//   if (childr) {
-//     setBSTNODEleft(parent, childr);
-//     setBSTNODEparent(childr, parent);
-//   }
-//   else {
-//     setBSTNODEleft(parent, NULL);
-//   }
-//   // printf("leaving rotate right\n");
-//   return;
-// }
 
 
 extern void
 rotateLeft(AVL *a, BSTNODE *child, BSTNODE *parent)
 {
-  // child = y
-  // parent = x
   setBSTNODEright(parent, getBSTNODEleft(child));
   if (getBSTNODEleft(child)) {
     BSTNODE *temp = getBSTNODEleft(child);
@@ -471,28 +440,7 @@ rotateLeft(AVL *a, BSTNODE *child, BSTNODE *parent)
   setBSTNODEparent(parent, child);
   return;
 }
-// {
-//   // printf("in rotate left\n");
-//   BSTNODE *childl = getBSTNODEleft(child);
-//   BSTNODE *gparent = getBSTNODEparent(parent);
-//   if (getBSTNODEleft(gparent) == parent) {
-//     setBSTNODEleft(gparent, child);
-//   }
-//   else {
-//     setBSTNODEright(gparent, child);
-//   }
-//   setBSTNODEparent(child, gparent);
-//   setBSTNODEleft(child, parent);
-//   setBSTNODEparent(parent, child);
-//   if (childl) {
-//     setBSTNODEright(parent, childl);
-//     setBSTNODEparent(childl, parent);
-//   }
-//   else {
-//     setBSTNODEright(parent, NULL);
-//   }
-//   return;
-// }
+
 
 
 extern void
