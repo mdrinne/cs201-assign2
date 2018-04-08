@@ -383,21 +383,21 @@ extern void insertionFixup(AVL *a, BSTNODE *curr)
     BSTNODE *sibling = getSibling(curr);
     BSTNODE *parent = getBSTNODEparent(curr);
     if (curr == getBSTroot(a->tree)) {
-      printf("AT ROOT\n");
+      // printf("AT ROOT\n");
       return;
     }
     else if (sibling == getFavoriteChild(parent)) {
-      printf("favors sibling\n");
+      // printf("favors sibling\n");
       setBalance(parent);
       return;
     }
     else if (getFavoriteChild(parent) == NULL) {
-      printf("parent has no favorite\n");
+      // printf("parent has no favorite\n");
       setBalance(parent);
       curr = getBSTNODEparent(curr);
     }
     else {
-      printf("else\n");
+      // printf("else\n");
       BSTNODE *y = getFavoriteChild(curr);
       if (y && (checkLinear(y,curr,parent) == 0)) {
         rotate(a, y, curr);
@@ -460,9 +460,9 @@ extern void deleteFixup(AVL *a, BSTNODE *curr)
 extern void insertAVL(AVL *a,void *value)
 {
   AVAL *new = newAVAL(a->display, a->compare, a->free, value);
-  printf("inserting ");
-  a->display(value, stdout);
-  printf("\n");
+  // printf("inserting ");
+  // a->display(value, stdout);
+  // printf("\n");
   assert(new != 0);
   if (sizeAVL(a) == 0) {
     insertBST(a->tree, new);
@@ -481,9 +481,9 @@ extern void insertAVL(AVL *a,void *value)
   else {
     BSTNODE *temp3 = insertBST(a->tree, new);
     a->size++;
-    printf("new node was inserted: ");
-    a->display(getAVALvalue(getBSTNODEvalue(temp3)), stdout);
-    printf("\n");
+    // printf("new node was inserted: ");
+    // a->display(getAVALvalue(getBSTNODEvalue(temp3)), stdout);
+    // printf("\n");
     insertionFixup(a, temp3);
     return;
   }
