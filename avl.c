@@ -394,73 +394,116 @@ checkLinear(BSTNODE *child, BSTNODE *parent, BSTNODE *gparent)
 
 
 extern void
-rotateRight(BSTNODE *child, BSTNODE *parent)
+rotateRight(AVL *a, BSTNODE *child, BSTNODE *parent)
 {
-  // printf("in rotate right\n");
-  BSTNODE *childr = getBSTNODEright(child);
+  setBSTNODEleft(parent, getBSTNODEright(child));
+  if (getBSTNODEright(child)) {
+    BSTNODE *temp = getBSTNODEright(child);
+    setBSTNODEparent(temp, parent);
+  }
   BSTNODE *gparent = getBSTNODEparent(parent);
-  // printf("found childs right child, and gparent\n");
-  // if (gparent == NULL) {
-  //   printf("gparent does not exist\n");
-  // }
-  if (getBSTNODEleft(gparent) == parent) {
+  setBSTNODEparent(child, gparent);
+  if (!getBSTNODEparent(parent)) {
+    setBSTroot(a->tree, child);
+  }
+  else if (getBSTNODEleft(gparent) == parent) {
     setBSTNODEleft(gparent, child);
-    // printf("set gparent's left chidl\n");
   }
   else {
     setBSTNODEright(gparent, child);
   }
-  setBSTNODEparent(child, gparent);
   setBSTNODEright(child, parent);
   setBSTNODEparent(parent, child);
-  if (childr) {
-    setBSTNODEleft(parent, childr);
-    setBSTNODEparent(childr, parent);
-  }
-  else {
-    setBSTNODEleft(parent, NULL);
-  }
-  // printf("leaving rotate right\n");
   return;
 }
+// {
+//   // printf("in rotate right\n");
+//   BSTNODE *childr = getBSTNODEright(child);
+//   BSTNODE *gparent = getBSTNODEparent(parent);
+//   // printf("found childs right child, and gparent\n");
+//   // if (gparent == NULL) {
+//   //   printf("gparent does not exist\n");
+//   // }
+//   if (getBSTNODEleft(gparent) == parent) {
+//     setBSTNODEleft(gparent, child);
+//     // printf("set gparent's left chidl\n");
+//   }
+//   else {
+//     setBSTNODEright(gparent, child);
+//   }
+//   setBSTNODEparent(child, gparent);
+//   setBSTNODEright(child, parent);
+//   setBSTNODEparent(parent, child);
+//   if (childr) {
+//     setBSTNODEleft(parent, childr);
+//     setBSTNODEparent(childr, parent);
+//   }
+//   else {
+//     setBSTNODEleft(parent, NULL);
+//   }
+//   // printf("leaving rotate right\n");
+//   return;
+// }
 
 
 extern void
-rotateLeft(BSTNODE *child, BSTNODE *parent)
+rotateLeft(AVL *a, BSTNODE *child, BSTNODE *parent)
 {
-  // printf("in rotate left\n");
-  BSTNODE *childl = getBSTNODEleft(child);
+  // child = y
+  // parent = x
+  setBSTNODEright(parent, getBSTNODEleft(child));
+  if (getBSTNODEleft(child)) {
+    BSTNODE *temp = getBSTNODEleft(child);
+    setBSTNODEparent(temp, parent);
+  }
   BSTNODE *gparent = getBSTNODEparent(parent);
-  if (getBSTNODEleft(gparent) == parent) {
+  setBSTNODEparent(child, gparent);
+  if (!getBSTNODEparent(parent)) {
+    setBSTroot(a->tree, child);
+  }
+  else if (getBSTNODEleft(gparent) == parent) {
     setBSTNODEleft(gparent, child);
   }
   else {
     setBSTNODEright(gparent, child);
   }
-  setBSTNODEparent(child, gparent);
   setBSTNODEleft(child, parent);
   setBSTNODEparent(parent, child);
-  if (childl) {
-    setBSTNODEright(parent, childl);
-    setBSTNODEparent(childl, parent);
-  }
-  else {
-    setBSTNODEright(parent, NULL);
-  }
   return;
-
 }
+// {
+//   // printf("in rotate left\n");
+//   BSTNODE *childl = getBSTNODEleft(child);
+//   BSTNODE *gparent = getBSTNODEparent(parent);
+//   if (getBSTNODEleft(gparent) == parent) {
+//     setBSTNODEleft(gparent, child);
+//   }
+//   else {
+//     setBSTNODEright(gparent, child);
+//   }
+//   setBSTNODEparent(child, gparent);
+//   setBSTNODEleft(child, parent);
+//   setBSTNODEparent(parent, child);
+//   if (childl) {
+//     setBSTNODEright(parent, childl);
+//     setBSTNODEparent(childl, parent);
+//   }
+//   else {
+//     setBSTNODEright(parent, NULL);
+//   }
+//   return;
+// }
 
 
 extern void
-rotate(BSTNODE *child, BSTNODE *parent)
+rotate(AVL *a, BSTNODE *child, BSTNODE *parent)
 {
   // printf("in rotate\n");
   if (getBSTNODEleft(parent) == child) {
-    rotateRight(child, parent);
+    rotateRight(a, child, parent);
   }
   else {
-    rotateLeft(child, parent);
+    rotateLeft(a, child, parent);
   }
   // printf("leaving rotate\n");
   return;
@@ -488,14 +531,14 @@ insertionFixup(AVL *a, BSTNODE *curr)
     else {
       BSTNODE *y = getFavoriteChild(curr);
       if (y && (checkLinear(y,curr,parent) == 0)) {
-        rotate(y, curr);
-        rotate(y, parent);
+        rotate(a, y, curr);
+        rotate(a, y, parent);
         setBalance(curr);
         setBalance(parent);
         setBalance(y);
       }
       else {
-        rotate(curr, parent);
+        rotate(a, curr, parent);
         setBalance(parent);
         setBalance(curr);
       }
@@ -508,29 +551,36 @@ insertionFixup(AVL *a, BSTNODE *curr)
 extern void
 insertAVL(AVL *a,void *value)
 {
-  // printf("in insert\n");
+  printf("in insert\n");
+  printf("INSERTING ");
+  a->display(value, stdout);
+  printf("\n");
   AVAL *new = newAVAL(a->display, a->compare, a->free, value);
   assert(new != 0);
   if (sizeAVL(a) == 0) {
     // printf("inserting to empty tree\n");
     insertBST(a->tree, new);
     a->size++;
-    // printf("inserted at root\n");
+    printf("inserted at root\n");
+    displayAVL(a, stdout);
+    printf("\n");
     return;
   }
 
   BSTNODE *temp = findBST(a->tree, new);
   if (temp) {
-    // printf("inserting value already in tree\n");
+    printf("inserting value already in tree\n");
     freeAVAL(new);
     AVAL *temp2 = getBSTNODEvalue(temp);
     incrAVALfrequency(temp2);
     a->size++;
     // printf("frequency incremented\n");
+    displayAVL(a, stdout);
+    printf("\n");
     return;
   }
   else {
-    // printf("inserting value not in tree\n");
+    printf("inserting value not in tree\n");
     BSTNODE *temp3 = insertBST(a->tree, new);
     a->size++;
     // printf("new node inserted\n");
@@ -542,6 +592,8 @@ insertAVL(AVL *a,void *value)
     //   curr = getBSTNODEparent(curr);
     // }
     insertionFixup(a, temp3);
+    displayAVL(a, stdout);
+    printf("\n");
     return;
   }
 }
@@ -598,15 +650,15 @@ deleteFixup(AVL *a, BSTNODE *curr)
       BSTNODE *sibling = getSibling(curr);
       BSTNODE *y = getFavoriteChild(sibling);
       if (y && (checkLinear(y, sibling, parent) == 0)) {
-        rotate(y, sibling);
-        rotate(y, parent);
+        rotate(a, y, sibling);
+        rotate(a, y, parent);
         setBalance(parent);
         setBalance(sibling);
         setBalance(y);
         curr = y;
       }
       else {
-        rotate(sibling, parent);
+        rotate(a, sibling, parent);
         setBalance(parent);
         setBalance(sibling);
         if (!y) {
@@ -634,6 +686,7 @@ deleteAVL(AVL *a,void *v)
     }
     else if (getAVALfrequency(temp2) == 1) {
       BSTNODE *delete = swapToLeafBST(a->tree, find);
+      // deleteFixup(a, delete);
       pruneLeafBST(a->tree, delete);
       int s = sizeBST(a->tree);
       s--;
@@ -666,7 +719,7 @@ sizeAVL(AVL *a)
 extern int
 duplicatesAVL(AVL *a)
 {
-  return sizeAVL(a) -sizeBST(a->tree);
+  return sizeAVL(a) - sizeBST(a->tree);
 }
 
 

@@ -32,8 +32,8 @@ test-gst:
 	gcc $(LOPTS) gst-0-0.c $(BOEXTRA) gst.o bst.o -o test-gst
 
 test-avl:
-	gcc $(LOPTS) -c avl-0-0.c avl.c bst.c $(BEXTRA)
-	gcc $(LOPTS) avl-0-0.c $(BOEXTRA) avl.o bst.o -o test-avl
+	gcc $(LOPTS) -c avl-0-3.c avl.c bst.c $(BEXTRA)
+	gcc $(LOPTS) avl-0-3.c $(BOEXTRA) avl.o bst.o -o test-avl
 
 valgrind: all
 	valgrind ./test-sll
