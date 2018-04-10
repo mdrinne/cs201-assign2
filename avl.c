@@ -569,14 +569,16 @@ extern void statisticsAVL(AVL *a,FILE *fp)
 
 extern void displayAVL(AVL *a,FILE *fp)
 {
-  displayBSTdecorated(a->tree, fp);
+  if (sizeAVL(a) == 0) printf("EMPTY\n");
+  else displayBSTdecorated(a->tree, fp);
   return;
 }
 
 
 extern void displayAVLdebug(AVL *a,FILE *fp)
 {
-  displayBST(a->tree, fp);
+  if (sizeAVL(a) == 0) printf("EMPTY\n");
+  else displayBST(a->tree, fp);
   return;
 }
 

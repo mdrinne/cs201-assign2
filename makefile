@@ -5,7 +5,7 @@ LOPTS = -Wall -Wextra -std=c99 -g
 BEXTRA = sll.c queue.c integer.c real.c string.c
 BOEXTRA = sll.o queue.o integer.o real.o string.o
 
-all : test-sll test-dll test-stack test-queue test-bst test-gst test-avl
+all : test-sll test-dll test-stack test-queue test-bst test-gst test-avl trees
 
 test-sll :
 	gcc $(LOPTS) -c sll-0-0.c sll.c integer.c real.c string.c
@@ -35,6 +35,10 @@ test-avl:
 	gcc $(LOPTS) -c avl-0-3.c avl.c bst.c $(BEXTRA)
 	gcc $(LOPTS) avl-0-3.c $(BOEXTRA) avl.o bst.o -o test-avl
 
+trees:
+		gcc $(LOPTS) -c trees.c bst.c $(BEXTRA) gst.c avl.c scanner.c
+		gcc $(LOPTS) trees.c $(OEXTRA) bst.o gst.o avl.o scanner.o -o trees
+
 valgrind: all
 	valgrind ./test-sll
 	valgrind ./test-dll
@@ -52,6 +56,7 @@ test :
 	./test-bst
 	./test-gst
 	./test-avl
+	./trees
 
 clean :
-	rm -f $(OBJS) queue-*.o stack-*.o dll-*.o test-stack test-queue test-sll test-dll test-bst test-gst test-avl gst-*.o avl-*.o sll-*.o bst-*.o
+	rm -f $(OBJS) queue-*.o stack-*.o dll-*.o test-stack test-queue test-sll test-dll test-bst test-gst test-avl trees gst-*.o avl-*.o sll-*.o bst-*.o

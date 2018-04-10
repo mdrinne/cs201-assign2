@@ -243,7 +243,8 @@ statisticsGST(GST *g,FILE *fp)
 extern void
 displayGST(GST *g,FILE *fp)
 {
-  displayBSTdecorated(g->tree, fp);
+  if (sizeGST(g) == 0) printf("EMPTY\n");
+  else displayBSTdecorated(g->tree, fp);
   return;
 }
 
@@ -251,7 +252,8 @@ displayGST(GST *g,FILE *fp)
 extern void
 displayGSTdebug(GST *g,FILE *fp)
 {
-  displayBST(g->tree, fp);
+  if (sizeGST(g) == 0) printf("EMPTY\n");
+  else displayBST(g->tree, fp);
   return;
 }
 
