@@ -503,38 +503,28 @@ displayBSTdecoratedhelper(BST *t, FILE *fp, int count, int level)
   }
   fprintf(fp, "%d: ", level);
   while (count > 0) {
-    // fprintf(fp, "in while loop\n");
     BSTNODE *curr = dequeue(t->nodes);
-    // fprintf(fp, "nopde dequeued\n");
     if (!getBSTNODEleft(curr) && !getBSTNODEright(curr)) {
       fprintf(fp, "=");
     }
-    // fprintf(fp, "before display\n");
     t->display(curr->value, fp);
-    // fprintf(fp, "after display\n");
 
     if (curr == getBSTroot(t)) {
-      // fprintf(fp, "in if statement\n");
       fprintf(fp,"(");
       t->display(getBSTNODEvalue(curr), fp);
       fprintf(fp, ")X");
     }
     else {
-      // fprintf(fp, "in else statement\n");
       fprintf(fp, "(");
-      // fprintf(fp, "after parenthesis\n");
       t->display(getBSTNODEvalue(getBSTNODEparent(curr)), fp);
       fprintf(fp, ")");
-      // fprintf(fp, "after parenthesis 2\n");
       // if (t->compare(getBSTNODEvalue(curr), getParentsLeftChild(curr)) == 0) {
       if (curr == getParentsLeftChild(curr)) {
-        // fprintf(fp, "in if loop\n");
         fprintf(fp, "L");
       }
       else {
         fprintf(fp, "R");
       }
-      // fprintf(fp, "end of while loop\n");
     }
 
     if (curr->left != NULL) {
