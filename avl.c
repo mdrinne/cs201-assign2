@@ -594,13 +594,13 @@ extern void *deleteAVL(AVL *a,void *value)
 
 extern int sizeAVL(AVL *a)
 {
-  return a->size;
+  return sizeBST(a->tree);
 }
 
 
 extern int duplicatesAVL(AVL *a)
 {
-  return sizeAVL(a) - sizeBST(a->tree);
+  return a->size - sizeBST(a->tree);
 }
 
 
