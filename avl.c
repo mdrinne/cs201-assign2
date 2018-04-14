@@ -176,10 +176,14 @@ extern int getMax(int a, int b)
 extern void
 setHeight(BSTNODE *temp)
 {
+  if (!temp) return;
   BSTNODE *left = getBSTNODEleft(temp);
   BSTNODE *right = getBSTNODEright(temp);
   AVAL *temp2 = getBSTNODEvalue(temp);
-  temp2->height = getMax(getHeight(left), getHeight(right));
+  if (!left && !right) temp2->height = 0;
+  else if (!left) temp2->height = getHeight(right)+1;
+  else if (!right) temp2->height = getHeight(left)+1;
+  else temp2->height = getMax(getHeight(left), getHeight(right))+1;
   return;
 }
 
@@ -187,8 +191,12 @@ setHeight(BSTNODE *temp)
 extern void
 setBalance(BSTNODE *temp)
 {
-  int l = getHeight(getBSTNODEleft(temp));
-  int r = getHeight(getBSTNODEright(temp));
+  BSTNODE *left = getBSTNODEleft(temp);
+  BSTNODE *right = getBSTNODEright(temp);
+  if (left) setHeight(left);
+  if (right) setHeight(right);
+  int l = getHeight(left);
+  int r = getHeight(right);
   AVAL *temp2 = getBSTNODEvalue(temp);
   temp2->bal = l - r;
   return;
@@ -289,7 +297,7 @@ extern BSTNODE *getSibling(BSTNODE *temp)
 extern BSTNODE *getFavoriteChild(BSTNODE *temp)
 {
   // setBalance(temp);
-  if (getBalance(temp) == 0) {
+  if (!temp) {
     return NULL;
   }
   else if (getBalance(temp) < 0) {
@@ -298,7 +306,9 @@ extern BSTNODE *getFavoriteChild(BSTNODE *temp)
   else if (getBalance(temp) > 0) {
     return getBSTNODEleft(temp);
   }
-  return NULL;
+  else {
+    return NULL;
+  }
 }
 
 
@@ -324,16 +334,16 @@ extern int checkLinear(BSTNODE *child, BSTNODE *parent, BSTNODE *gparent)
 }
 
 
-extern void rotateRight(AVL *a, BSTNODE *x)
+extern void rotateRight(AVL *a, BSTNODE *y)
 {
-  BSTNODE *y = getBSTNODEleft(x);
-  setBSTNODEleft(x, getBSTNODEright(y));
+  BSTNODE *x = getBSTNODEparent(y);
   BSTNODE *yright = getBSTNODEright(y);
+  BSTNODE *xparent = getBSTNODEparent(x);
+  setBSTNODEleft(x, yright);
   if (yright) {
     setBSTNODEparent(yright, x);
   }
-  setBSTNODEparent(y, getBSTNODEparent(x));
-  BSTNODE *xparent = getBSTNODEparent(x);
+  setBSTNODEparent(y, xparent);
   if (!xparent) {
     setBSTroot(a->tree, y);
   }
@@ -345,20 +355,22 @@ extern void rotateRight(AVL *a, BSTNODE *x)
   }
   setBSTNODEright(y, x);
   setBSTNODEparent(x, y);
+  setHeight(x);
+  setHeight(y);
   return;
 }
 
 
-extern void rotateLeft(AVL *a, BSTNODE *x)
+extern void rotateLeft(AVL *a, BSTNODE *y)
 {
-  BSTNODE *y = getBSTNODEright(x);
-  setBSTNODEright(x, getBSTNODEleft(y));
+  BSTNODE *x = getBSTNODEparent(y);
   BSTNODE *yleft = getBSTNODEleft(y);
+  BSTNODE *xparent = getBSTNODEparent(x);
+  setBSTNODEright(x, yleft);
   if (yleft) {
     setBSTNODEparent(yleft, x);
   }
-  setBSTNODEparent(y, getBSTNODEparent(x));
-  BSTNODE *xparent = getBSTNODEparent(x);
+  setBSTNODEparent(y, xparent);
   if (!xparent) {
     setBSTroot(a->tree, y);
   }
@@ -370,13 +382,16 @@ extern void rotateLeft(AVL *a, BSTNODE *x)
   }
   setBSTNODEleft(y, x);
   setBSTNODEparent(x, y);
+  setHeight(x);
+  setHeight(y);
   return;
 }
 
 
 extern void rotate(AVL *a, BSTNODE *x)
 {
-  if (getBSTNODEleft(getBSTNODEparent(x)) == x) rotateRight(a, x);
+  BSTNODE *left = getBSTNODEleft(getBSTNODEparent(x));
+  if (left && left == x) rotateRight(a, x);
   else rotateLeft(a, x);
   return;
 }
@@ -385,51 +400,58 @@ extern void rotate(AVL *a, BSTNODE *x)
 extern void insertionFixup(AVL *a, BSTNODE *curr)
 {
   while (1) {
-    printf("-------------------------------\n");
-    displayAVL(a, stdout);
-    printf("^^^^^^^^^^BEFORE WHILE^^^^^^^^^^\n");
-    printf("\n");
+    // printf("-------------------------------\n");
+    // displayAVL(a, stdout);
+    // printf("^^^^^^^^^^BEGINNING OF WHILE^^^^^^^^^^\n");
+    // printf("\n");
     BSTNODE *sibling = getSibling(curr);
     BSTNODE *parent = getBSTNODEparent(curr);
-    printf("PARENT BALANCE IS: %d\n", getBalance(parent));
+    // if (parent) {
+    //   printf("PARENT BALANCE IS: %d\n", getBalance(parent));
+    // }
     BSTNODE *fav = getFavoriteChild(parent);
     if (curr == getBSTroot(a->tree)) {
-      printf("^^^^^^^^REACHED ROOT^^^^^^^^\n\n\n\n");
+      // setHeight(curr);
+      // setBalance(curr);
+      // printf("^^^^^^^^REACHED ROOT^^^^^^^^\n\n\n\n");
       return;
     }
-    else if (sibling == fav && fav) {
-      printf("^^^^^^^^^^^^^^^SIBLING IS FAVORITE CHILD^^^^^^^^^^^^^^\n");
-      if (!sibling) {
-        printf("SIBLING IS NULL\n");
-      }
-      printf("\n\n\n");
+    else if (fav && sibling == fav) {
+      // printf("^^^^^^^^^^^^^^^SIBLING IS FAVORITE CHILD^^^^^^^^^^^^^^\n");
+      // if (!sibling) {
+      //   printf("SIBLING IS NULL\n");
+      // }
+      // printf("\n\n\n");
+      // setHeight(curr);
       setBalance(parent);
       return;
     }
     else if (!fav) {
-      printf("^^^^^^^^NO FAVORITE CHILD^^^^^^^^\n\n\n\n");
+      // printf("^^^^^^^^NO FAVORITE CHILD^^^^^^^^\n\n\n\n");
+      // setHeight(curr);
       setBalance(parent);
       curr = getBSTNODEparent(curr);
     }
     else {
       BSTNODE *y = getFavoriteChild(curr);
       if (y && (checkLinear(y,curr,parent) == 0)) {
-        printf("^^^^^^^^DOUBLE ROTATION^^^^^^^^\n\n");
-        rotate(a, curr);
-        displayAVL(a, stdout);
-        printf("^^^^^^^^FIRST ROTATION COMPLETE^^^^^^^^\n\n");
-        rotate(a, parent);
-        displayAVL(a, stdout);
-        printf("^^^^^^^^SECOND ROTATION COMPLETE^^^^^^^^\n\n\n\n");
+        // printf("^^^^^^^^DOUBLE ROTATION^^^^^^^^\n\n");
+        rotate(a, y);
+        // displayAVL(a, stdout);
+        // printf("^^^^^^^^FIRST ROTATION COMPLETE^^^^^^^^\n\n");
+        rotate(a, y);
+        // displayAVL(a, stdout);
+        // printf("^^^^^^^^SECOND ROTATION COMPLETE^^^^^^^^\n\n\n\n");
+        // setHeight(curr);
         setBalance(curr);
         setBalance(parent);
         setBalance(y);
       }
       else {
-        printf("^^^^^^^^SINGLE ROTATION^^^^^^^^\n\n");
-        rotate(a, parent);
-        displayAVL(a, stdout);
-        printf("^^^^^^^^SINGLE ROTAION COMPLETE^^^^^^^^\n\n\n\n");
+        // printf("^^^^^^^^SINGLE ROTATION^^^^^^^^\n\n");
+        rotate(a, curr);
+        // displayAVL(a, stdout);
+        // printf("^^^^^^^^SINGLE ROTAION COMPLETE^^^^^^^^\n\n\n\n");
         setBalance(parent);
         setBalance(curr);
       }
@@ -442,10 +464,10 @@ extern void insertionFixup(AVL *a, BSTNODE *curr)
 extern void deleteFixup(AVL *a, BSTNODE *curr)
 {
   while (curr) {
-    printf("-------------------------------");
-    displayAVL(a, stdout);
-    printf("-------------------------------");
-    printf("\n\n");
+    // printf("-------------------------------");
+    // displayAVL(a, stdout);
+    // // printf("-------------------------------");
+    // printf("\n\n");
     BSTNODE *parent = getBSTNODEparent(curr);
     if (curr == getBSTroot(a->tree)) {
       return;
@@ -487,7 +509,7 @@ extern void insertAVL(AVL *a,void *value)
   AVAL *new = newAVAL(a->display, a->compare, a->free, value);
   // printf("inserting ");
   // a->display(value, stdout);
-  // printf("\n");
+  // printf("\n\n");
   assert(new != 0);
   if (sizeAVL(a) == 0) {
     insertBST(a->tree, new);
