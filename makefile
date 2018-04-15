@@ -1,6 +1,6 @@
 
 
-OBJS = integer.o real.o string.o sll.o dll.o queue.o stack.o bst.o heap.o heapsort.o gst.o avl.o scanner.o
+OBJS = integer.o real.o string.o sll.o dll.o queue.o stack.o bst.o heap.o heapsort.o gst.o avl.o scanner.o trees.o
 LOPTS = -Wall -Wextra -std=c99 -g
 BEXTRA = sll.c queue.c integer.c real.c string.c
 BOEXTRA = sll.o queue.o integer.o real.o string.o

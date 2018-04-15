@@ -5,7 +5,7 @@
 
 typedef struct STRING STRING;
 
-extern STRING *newString(char *);
+extern STRING *newSTRING(char *);
 extern char *getSTRING(STRING *);
 extern char *setSTRING(STRING *, char *);
 extern void displaySTRING(void *, FILE *);

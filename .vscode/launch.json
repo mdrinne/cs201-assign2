@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
     {
-        "name": "AVL",
+        "name": "TREES",
         "type": "cppdbg",
         "request": "launch",
-        "program": "${workspaceFolder}/test-avl",
+        "program": "${workspaceFolder}/trees",
         "args": [],
         "stopAtEntry": false,
         "cwd": "${workspaceFolder}",
@@ -20,7 +20,7 @@
             "name": "(lldb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "enter program name, for example ${workspaceFolder}/test-avl",
+            "program": "enter program name, for example ${workspaceFolder}/trees",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
