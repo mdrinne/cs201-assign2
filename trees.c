@@ -102,8 +102,8 @@ avlRead(AVL *tree, int argc, char **argv)
         else temp = readString(fp2);
         /*--------clean string--------*/
         temp = cleaner(temp);
-        STRING *temp3 = newSTRING(temp);
-        deleteAVL(tree, temp3);
+        STRING *temp4 = newSTRING(temp);
+        deleteAVL(tree, temp4);
         break;
 
       case 'f':
@@ -112,10 +112,10 @@ avlRead(AVL *tree, int argc, char **argv)
         else temp = readString(fp2);
         /*--------clean string--------*/
         temp = cleaner(temp);
-        STRING *temp3 = newSTRING(temp);
-        int freq = findAVLcount(temp3);
+        STRING *temp5 = newSTRING(temp);
+        int freq = findAVLcount(tree,temp5);
         printf("Frequency of ");
-        displaySTRING(temp2, stdout);
+        displaySTRING(temp5, stdout);
         printf(": %d\n", freq);
         break;
     }
@@ -177,8 +177,8 @@ gstRead(GST *tree, int argc, char **argv)
         else temp = readString(fp2);
         /*--------clean string--------*/
         temp = cleaner(temp);
-        STRING *temp3 = newSTRING(temp);
-        deleteGST(tree, temp3);
+        STRING *temp4 = newSTRING(temp);
+        deleteGST(tree, temp4);
         break;
 
       case 'f':
@@ -187,10 +187,10 @@ gstRead(GST *tree, int argc, char **argv)
         else temp = readString(fp2);
         /*--------clean string--------*/
         temp = cleaner(temp);
-        STRING *temp3 = newSTRING(temp);
-        int freq = findGSTcount(temp3);
+        STRING *temp5 = newSTRING(temp);
+        int freq = findGSTcount(tree,temp5);
         printf("Frequency of ");
-        displaySTRING(temp3, stdout);
+        displaySTRING(temp5, stdout);
         printf(": %d\n", freq);
         break;
     }
@@ -206,7 +206,7 @@ gstRead(GST *tree, int argc, char **argv)
 extern char *
 cleaner(char *str)
 {
-  int length = strlen(str);
+  // int length = strlen(str);
   int source = 0;
   int dest = 0;
   int space = 0;
@@ -226,16 +226,16 @@ cleaner(char *str)
         space = 1;
         str[dest] = str[source];
         ++dest;
-      else continue;
       }
+      else continue;
     }
     source++;
   }
   str[dest] = '\0';
-  dest++;
-  char *str2[dest];
-  for (int i=0; i<dest; i++) {
-    str2[i] = str[i];
-  }
-  return str2;
+  // dest++;
+  // char *str2[dest];
+  // for (int i=0; i<dest; i++) {
+  //   str2[i] = str[i];
+  // }
+  return str;
 }
