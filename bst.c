@@ -182,6 +182,7 @@ insertBST(BST *t,void *value)
   assert(new != 0);
   if (t->size == 0) { //tree is empty, insert at root
     t->root = new;
+    new->parent = new;
     t->size++;
     return new;
   }
@@ -509,23 +510,13 @@ displayBSTdecoratedhelper(BST *t, FILE *fp, int count, int level)
     }
     t->display(curr->value, fp);
 
-    if (curr == getBSTroot(t)) {
-      fprintf(fp,"(");
-      t->display(getBSTNODEvalue(curr), fp);
-      fprintf(fp, ")X");
-    }
-    else {
-      fprintf(fp, "(");
-      t->display(getBSTNODEvalue(getBSTNODEparent(curr)), fp);
-      fprintf(fp, ")");
-      // if (t->compare(getBSTNODEvalue(curr), getParentsLeftChild(curr)) == 0) {
-      if (curr == getParentsLeftChild(curr)) {
-        fprintf(fp, "L");
-      }
-      else {
-        fprintf(fp, "R");
-      }
-    }
+    fprintf(fp, "(");
+    t->display(getBSTNODEvalue(getBSTNODEparent(curr)), fp);
+    fprintf(fp, ")");
+     // if (t->compare(getBSTNODEvalue(curr), getParentsLeftChild(curr)) == 0) {
+    if (curr == getBSTNODEparent(curr)) fprintf(fp, "X");
+    else if (curr == getParentsLeftChild(curr)) fprintf(fp, "L");
+    else fprintf(fp, "R");
 
     if (curr->left != NULL) {
       enqueue(t->nodes, curr->left);

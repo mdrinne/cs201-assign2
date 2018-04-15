@@ -222,6 +222,7 @@ readStringClean(FILE *fp)
   /* collect characters until the closing double quote */
 
   while (ch != '\"') {
+    int space = 0;
     if (ch == EOF) {
       fprintf(stderr,"SCAN ERROR: attempt to read a string failed\n");
       fprintf(stderr,"no closing double quote\n");
@@ -240,12 +241,26 @@ readStringClean(FILE *fp)
         exit(6);
       }
       buffer[index] = convertEscapedChar(ch);
+      ++index;
+      ch = fgetc(fp);
     }
     else {
       if ((ch >= 97 && ch <= 122) || ch == 32) {
-        buffer[index] = ch;
-        ++index;
-        ch = fgetc(fp);
+        if (space == 1 && ch == 32) {
+          ch = fgetc(fp);
+        }
+        else if (space == 0 && ch == 32) {
+          space = 1;
+          buffer[index] = ch;
+          ++index;
+          ch = fgetc(fp);
+        }
+        else {
+          space = 0;
+          buffer[index] = ch;
+          ++index;
+          ch = fgetc(fp);
+        }
       }
       else if (ch >= 65 && ch <= 90) {
         ch = ch + 32;
