@@ -237,7 +237,12 @@ cleaner(char *str)
     }
     source++;
   }
-  str[dest] = '\0';
+  if (isspace(str[dest-1])) {
+    str[dest-1] = '\0';
+  }
+  else {
+    str[dest] = '\0';
+  }
   return;
 }
 
