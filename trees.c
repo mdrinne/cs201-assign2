@@ -29,7 +29,6 @@ main(int argc, char **argv)
   // static void (*display)(void *, FILE *);
   // static void (*release)(void *);
 
-  printf("--------top of main--------\n\n");
   int type = 0;
 
   char c = argv[1][1];
@@ -40,23 +39,19 @@ main(int argc, char **argv)
       break;
 
     case 'g':
-      printf("--------type is gst--------\n\n");
       type = 1;
       break;
 
     case 'r':
-      printf("--------type is avl--------\n\n");
       type = 0;
       break;
   }
 
   if (type == 0) {
-    printf("--------calling to avl---------\n\n");
     AVL *atree = newAVL(displaySTRING, compareSTRING, freeSTRING);
     avlRead(atree, argc, argv);
   }
   else {
-    printf("--------calling to gst--------\n\n");
     GST *gtree = newGST(displaySTRING, compareSTRING, freeSTRING);
     gstRead(gtree, argc, argv);
   }
