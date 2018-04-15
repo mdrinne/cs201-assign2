@@ -30,6 +30,7 @@ newGVAL(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *),void 
 }
 
 
+//returns a GVAL's value
 extern void *
 getGVALvalue(GVAL *temp)
 {
@@ -37,12 +38,15 @@ getGVALvalue(GVAL *temp)
 }
 
 
+//returns a GVAL's frequency
 extern int
 getGVALfrequency(GVAL *temp)
 {
   return temp->freq;
 }
 
+
+//display function for GVALs
 extern void
 displayGVAL(void *v, FILE *fp)
 {
@@ -55,6 +59,7 @@ displayGVAL(void *v, FILE *fp)
 }
 
 
+//compare function for GVALs
 extern int
 compareGVAL(void *v, void *w)
 {
@@ -63,6 +68,8 @@ compareGVAL(void *v, void *w)
   return temp->compare(getGVALvalue(temp),getGVALvalue(temp2));
 }
 
+
+//free function for GVALs, just the node
 extern void
 freeGVAL(void *v)
 {
@@ -71,6 +78,7 @@ freeGVAL(void *v)
 }
 
 
+//free function for GVALs, node and value
 extern void
 freeGVALwhole(void *v)
 {
@@ -83,6 +91,7 @@ freeGVALwhole(void *v)
 }
 
 
+//increments the given GVAL's frequency
 extern void
 incrGVALfrequency(GVAL *temp)
 {
@@ -91,6 +100,7 @@ incrGVALfrequency(GVAL *temp)
 }
 
 
+//decrements the given GVAL's frequency
 extern void
 decrGVALfrequency(GVAL *temp)
 {
@@ -123,6 +133,7 @@ newGST(void (*d)(void *,FILE *),int (*c)(void *,void *),void (*f)(void *))
 }
 
 
+//inserts a value into the GST
 extern void
 insertGST(GST *g,void *value)
 {
@@ -150,6 +161,7 @@ insertGST(GST *g,void *value)
 }
 
 
+//returns the frequency of a value, if found in the tree
 extern int
 findGSTcount(GST *g,void *v)
 {
@@ -165,6 +177,7 @@ findGSTcount(GST *g,void *v)
 }
 
 
+//returns the value of a node, if found in the tree
 extern void *
 findGST(GST *g,void *v)
 
@@ -181,6 +194,7 @@ findGST(GST *g,void *v)
 }
 
 
+//delets a value from the GST
 extern void *
 deleteGST(GST *g,void *v)
 {
@@ -217,6 +231,7 @@ deleteGST(GST *g,void *v)
 }
 
 
+//returns the sixe of the GST
 extern int
 sizeGST(GST *g)
 {
@@ -224,6 +239,7 @@ sizeGST(GST *g)
 }
 
 
+//returns the number of duplicates in the tree
 extern int
 duplicates(GST *g)
 {
@@ -231,6 +247,7 @@ duplicates(GST *g)
 }
 
 
+//prints a statistical analysis of the tree (duplicates, # of nodes, min height, max height)
 extern void
 statisticsGST(GST *g,FILE *fp)
 {
@@ -240,6 +257,7 @@ statisticsGST(GST *g,FILE *fp)
 }
 
 
+//calls to displayBSTdecorated to show a level ordered display of the tree
 extern void
 displayGST(GST *g,FILE *fp)
 {
@@ -249,6 +267,7 @@ displayGST(GST *g,FILE *fp)
 }
 
 
+//clals to the display function of the underlying data structure (displayBST)
 extern void
 displayGSTdebug(GST *g,FILE *fp)
 {
@@ -258,6 +277,7 @@ displayGSTdebug(GST *g,FILE *fp)
 }
 
 
+//frees all allocated space for the tree
 extern void
 freeGST(GST *g)
 {

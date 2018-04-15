@@ -619,7 +619,7 @@ extern void statisticsAVL(AVL *a,FILE *fp)
 }
 
 
-//calls to displayBSTdebughelper to show a level order display of the tree
+//calls to displayBSTdecorated to show a level ordered display of the tree
 extern void displayAVL(AVL *a,FILE *fp)
 {
   if (sizeAVL(a) == 0) {
