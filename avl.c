@@ -453,22 +453,22 @@ extern void deleteFixup(AVL *a, BSTNODE *curr)
 {
   changeHeight(curr, -1);
   while (1) {
-    printf("----------------\n");
-    displayAVL(a,stdout);
-    printf("--------TOP OF WHILE--------\n\n\n");
+    // printf("----------------\n");
+    // displayAVL(a,stdout);
+    // printf("--------TOP OF WHILE--------\n\n\n");
     BSTNODE *parent = getBSTNODEparent(curr);
     BSTNODE *fav = getFavoriteChild(parent);
     if (parent == curr) {
-      printf("^^^^^^^^REACHED ROOT^^^^^^^^\n\n");
+    //   printf("^^^^^^^^REACHED ROOT^^^^^^^^\n\n");
       return;
     }
     else if (fav && curr == fav) {
-      printf("^^^^^^^^CURR IS FAV^^^^^^^^\n\n\n");
+      // printf("^^^^^^^^CURR IS FAV^^^^^^^^\n\n\n");
       setBalance(parent);
       curr = parent;
     }
     else if (!fav) {
-      printf("^^^^^^^^NO FAVORITE CHILD^^^^^^^^\n\n\n");
+      // printf("^^^^^^^^NO FAVORITE CHILD^^^^^^^^\n\n\n");
       setBalance(parent);
       return;
     }
@@ -477,23 +477,23 @@ extern void deleteFixup(AVL *a, BSTNODE *curr)
       BSTNODE *y = getFavoriteChild(sibling);
       int l = checkLinear(y, sibling, parent);
       if (y && l == 0) {
-        printf("^^^^^^^^DOUBLE ROTATE IS NEEDED^^^^^^^^\n\n");
+        // printf("^^^^^^^^DOUBLE ROTATE IS NEEDED^^^^^^^^\n\n");
         rotate(a, y);
-        displayAVAL(a, stdout);
-        printf("^^^^^^^^FIRST ROTATE COMPLETE^^^^^^^^\n\n");
+        // displayAVAL(a, stdout);
+        // printf("^^^^^^^^FIRST ROTATE COMPLETE^^^^^^^^\n\n");
         rotate(a, y);
-        displayAVL(a, stdout);
-        printf("^^^^^^^^SECOND ROTATE COMPLETE^^^^^^^^\n\n\n");
+        // displayAVL(a, stdout);
+        // printf("^^^^^^^^SECOND ROTATE COMPLETE^^^^^^^^\n\n\n");
         setBalance(parent);
         setBalance(sibling);
         setBalance(y);
         curr = y;
       }
       else {
-        printf("^^^^^^^^SINLGE ROTATE NEEDED^^^^^^^^\n\n");
+        // printf("^^^^^^^^SINLGE ROTATE NEEDED^^^^^^^^\n\n");
         rotate(a, sibling);
-        displayAVL(a, stdout);
-        printf("^^^^^^^^SINGLE ROTATE COMPLETE^^^^^^^^\n\n\n");
+        // displayAVL(a, stdout);
+        // printf("^^^^^^^^SINGLE ROTATE COMPLETE^^^^^^^^\n\n\n");
         setBalance(parent);
         setBalance(sibling);
         if (!y) {
@@ -563,16 +563,16 @@ extern void *deleteAVL(AVL *a,void *value)
     if (getAVALfrequency(temp2) > 1) {
       decrAVALfrequency(temp2);
       a->size--;
-      displayAVL(a, stdout);
-      printf("^^^^^^^^AFTER DECR^^^^^^^^\n\n\n");
+      // displayAVL(a, stdout);
+      // printf("^^^^^^^^AFTER DECR^^^^^^^^\n\n\n");
       return NULL;
     }
     else if (getAVALfrequency(temp2) == 1) {
       BSTNODE *delete = swapToLeafBST(a->tree, find);
       deleteFixup(a, delete);
       pruneLeafBST(a->tree, delete);
-      displayAVL(a, stdout);
-      printf("^^^^^^^^AFTER PRUNE^^^^^^^^\n\n\n");
+      // displayAVL(a, stdout);
+      // printf("^^^^^^^^AFTER PRUNE^^^^^^^^\n\n\n");
       int s = sizeBST(a->tree);
       s--;
       setBSTsize(a->tree, s);

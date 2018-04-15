@@ -486,6 +486,7 @@ displayBSTdebug(BST *t,FILE *fp) {
 }
 
 
+//this function returns the left child of the nodes parent
 extern void *
 getParentsLeftChild(BSTNODE *curr)
 {
@@ -496,6 +497,7 @@ getParentsLeftChild(BSTNODE *curr)
 }
 
 
+//helper function to level ordered decorated display
 extern void
 displayBSTdecoratedhelper(BST *t, FILE *fp, int count, int level)
 {
@@ -544,6 +546,7 @@ displayBSTdecoratedhelper(BST *t, FILE *fp, int count, int level)
 }
 
 
+//this function displays the avl tree in level order, as well as with all extra statistics
 extern void
 displayBSTdecorated(BST *t, FILE *fp) {
   if (t->size == 0) {
