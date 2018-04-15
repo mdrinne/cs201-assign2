@@ -71,29 +71,13 @@ avlRead(AVL *tree, int argc, char **argv)
   FILE *fp = fopen(argv[argc-2], "r");
   int sot = stringPending(fp);
   char *temp;
-  // if (sot == 0) {
-  //   temp = readToken(fp);
-  //   cleanToken(temp);
-  // }
-  // else {
-  //   temp = readString(fp);
-  //   cleanString(temp);
-  // }
   if (sot == 0) temp = readToken(fp);
   else temp = readString(fp);
   if (temp) cleaner(temp);
   while (!feof(fp)) {
     STRING *temp2 = newSTRING(temp);
-    insertAVL(tree, temp2);
+    if (isalpha(temp[0])) insertAVL(tree, temp2);
     sot = stringPending(fp);
-    // if (sot == 0) {
-    //   temp = readToken(fp);
-    //   cleanToken(temp);
-    // }
-    // else {
-    //   temp = readString(fp);
-    //   cleanString(temp);
-    // }
     if (sot == 0) temp = readToken(fp);
     else temp = readString(fp);
     if (temp) cleaner(temp);
@@ -114,48 +98,24 @@ avlRead(AVL *tree, int argc, char **argv)
 
       case 'i':
         sot = stringPending(fp2);
-        // if (sot == 0) {
-        //   temp = readToken(fp);
-        //   cleanToken(temp);
-        // }
-        // else {
-        //   temp = readString(fp);
-        //   cleanString(temp);
-        // }
         if (sot == 0) temp = readToken(fp);
         else temp = readString(fp);
         if (temp) cleaner(temp);
         STRING *temp3 = newSTRING(temp);
-        insertAVL(tree, temp3);
+        if (isalpha(temp[0])) insertAVL(tree, temp3);
         break;
 
       case 'd':
         sot = stringPending(fp2);
-        // if (sot == 0) {
-        //   temp = readToken(fp);
-        //   cleanToken(temp);
-        // }
-        // else {
-        //   temp = readString(fp);
-        //   cleanString(temp);
-        // }
         if (sot == 0) temp = readToken(fp);
         else temp = readString(fp);
         if (temp) cleaner(temp);
         STRING *temp4 = newSTRING(temp);
-        deleteAVL(tree, temp4);
+        if (isalpha(temp[0])) deleteAVL(tree, temp4);
         break;
 
       case 'f':
         sot = stringPending(fp2);
-        // if (sot == 0) {
-        //   temp = readToken(fp);
-        //   cleanToken(temp);
-        // }
-        // else {
-        //   temp = readString(fp);
-        //   cleanString(temp);
-        // }
         if (sot == 0) temp = readToken(fp);
         else temp = readString(fp);
         if (temp) cleaner(temp);
@@ -178,44 +138,28 @@ avlRead(AVL *tree, int argc, char **argv)
 extern void
 gstRead(GST *tree, int argc, char **argv)
 {
-  printf("--------in gstRead--------\n\n");
+  // printf("--------in gstRead--------\n\n");
   FILE *fp = fopen(argv[argc-2], "r");
-  printf("--------opened .data--------\n\n");
+  // printf("--------opened .data--------\n\n");
   int sot = stringPending(fp);
   char *temp;
-  // if (sot == 0) {
-  //   temp = readToken(fp);
-  //   cleanToken(temp);
-  // }
-  // else {
-  //   temp = readString(fp);
-  //   cleanString(temp);
-  // }
   if (sot == 0) temp = readToken(fp);
   else temp = readString(fp);
   if (temp) cleaner(temp);
-  printf("--------cleaned--------\n\n");
+  // printf("--------cleaned--------\n\n");
   while (!feof(fp)) {
     STRING *temp2 = newSTRING(temp);
-    insertGST(tree, temp2);
-    displaySTRING(temp2, stdout);
-    printf("\n--------inserted--------\n\n");
+    if (isalpha(temp[0])) insertGST(tree, temp2);
+    // displaySTRING(temp2, stdout);
+    // printf("\n--------inserted--------\n\n");
     sot = stringPending(fp);
-    // if (sot == 0) {
-    //   temp = readToken(fp);
-    //   if (temp) cleanToken(temp);
-    // }
-    // else {
-    //   temp = readString(fp);
-    //   if (temp) cleanString(temp);
-    // }
     if (sot == 0) temp = readToken(fp);
     else temp = readString(fp);
     if (temp) cleaner(temp);
   }
-  printf("--------left while loop--------\n\n");
+  // printf("--------left while loop--------\n\n");
   fclose(fp);
-  printf("!!!!!!!!!!!!!!!!!!!END OF FIRST FILE!!!!!!!!!!!!!!!!!!!\n\n");
+  // printf("!!!!!!!!!!!!!!!!!!!END OF FIRST FILE!!!!!!!!!!!!!!!!!!!\n\n");
   FILE *fp2 = fopen(argv[argc-1], "r");
   char c = fgetc(fp2);
   while (!feof(fp2)) {
@@ -230,53 +174,32 @@ gstRead(GST *tree, int argc, char **argv)
 
       case 'i':
         sot = stringPending(fp2);
-        // if (sot == 0) {
-        //   temp = readToken(fp);
-        //   cleanToken(temp);
-        // }
-        // else {
-        //   temp = readString(fp);
-        //   cleanString(temp);
-        // }
         if (sot == 0) temp = readToken(fp);
         else temp = readString(fp);
         if (temp) cleaner(temp);
         STRING *temp3 = newSTRING(temp);
-        insertGST(tree, temp3);
+        if (isalpha(temp[0])) insertGST(tree, temp3);
         break;
 
       case 'd':
         sot = stringPending(fp2);
-        // if (sot == 0) {
-        //   temp = readToken(fp);
-        //   cleanToken(temp);
-        // }
-        // else {
-        //   temp = readString(fp);
-        //   cleanString(temp);
-        // }
         if (sot == 0) temp = readToken(fp);
         else temp = readString(fp);
         if (temp) cleaner(temp);
         STRING *temp4 = newSTRING(temp);
-        deleteGST(tree, temp4);
+        if (isalpha(temp[0])) deleteGST(tree, temp4);
         break;
 
       case 'f':
         sot = stringPending(fp2);
-        // if (sot == 0) {
-        //   temp = readToken(fp);
-        //   cleanToken(temp);
-        // }
-        // else {
-        //   temp = readString(fp);
-        //   cleanString(temp);
-        // }
         if (sot == 0) temp = readToken(fp);
         else temp = readString(fp);
         if (temp) cleaner(temp);
         STRING *temp5 = newSTRING(temp);
+        // int freq'
+        // if (isalpha(temp[0])) {
         int freq = findGSTcount(tree,temp5);
+        // }
         printf("Frequency of ");
         displaySTRING(temp5, stdout);
         printf(": %d\n", freq);
