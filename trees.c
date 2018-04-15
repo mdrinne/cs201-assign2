@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
+#include <ctype.h>
 #include "bst.h"
 #include "string.h"
 #include "queue.h"
@@ -11,8 +12,7 @@
 
 extern void avlRead(AVL *tree, int argc, char **argv);
 extern void gstRead(GST *tree, int argc, char **argv);
-char *readStringClean(FILE *fp);
-char *readTokenClean(FILE *fp);
+char *cleaner(char *);
 
 
 int
@@ -59,14 +59,18 @@ avlRead(AVL *tree, int argc, char **argv)
   FILE *fp = fopen(argv[argc-2], "r");
   int sot = stringPending(fp);
   char *temp;
-  if (sot == 0) temp = readTokenClean(fp);
-  else temp = readStringClean(fp);
+  if (sot == 0) temp = readToken(fp);
+  else temp = readString(fp);
+  /*--------clean string--------*/
+  temp = cleaner(temp);
   while (!feof(fp)) {
     STRING *temp2 = newSTRING(temp);
     insertAVL(tree, temp2);
     sot = stringPending(fp);
-    if (sot == 0) temp = readTokenClean(fp);
-    else temp = readStringClean(fp);
+    if (sot == 0) temp = readToken(fp);
+    else temp = readString(fp);
+    /*--------clean string--------*/
+    temp = cleaner(temp);
   }
   fclose(fp);
 
@@ -84,26 +88,32 @@ avlRead(AVL *tree, int argc, char **argv)
 
       case 'i':
         int sot = stringPending(fp2);
-        if (sot == 0) temp = readTokenClean(fp2);
-        else temp = readStringClean(fp2);
-        STRING *temp2 = newSTRING(temp);
-        insertAVL(tree, temp2);
+        if (sot == 0) temp = readToken(fp2);
+        else temp = readString(fp2);
+        /*--------clean string--------*/
+        temp = cleaner(temp);
+        STRING *temp3 = newSTRING(temp);
+        insertAVL(tree, temp3);
         break;
 
       case 'd':
         int sot = stringPending(fp2);
-        if (sot == 0) temp = readTokenClean(fp2);
-        else temp = readStringClean(fp2);
-        STRING *temp2 = newSTRING(temp);
-        deleteAVL(tree, temp2);
+        if (sot == 0) temp = readToken(fp2);
+        else temp = readString(fp2);
+        /*--------clean string--------*/
+        temp = cleaner(temp);
+        STRING *temp3 = newSTRING(temp);
+        deleteAVL(tree, temp3);
         break;
 
       case 'f':
         int sot = stringPending(fp2);
-        if (sot == 0) temp = readTokenClean(fp2);
-        else temp = readStringClean(fp2);
-        STRING *temp2 = newSTRING(temp);
-        int freq = findAVLcount(temp2);
+        if (sot == 0) temp = readToken(fp2);
+        else temp = readString(fp2);
+        /*--------clean string--------*/
+        temp = cleaner(temp);
+        STRING *temp3 = newSTRING(temp);
+        int freq = findAVLcount(temp3);
         printf("Frequency of ");
         displaySTRING(temp2, stdout);
         printf(": %d\n", freq);
@@ -124,14 +134,18 @@ gstRead(GST *tree, int argc, char **argv)
   FILE *fp = fopen(argv[argc-2], "r");
   int sot = stringPending(fp);
   char *temp;
-  if (sot == 0) temp = readTokenClean(fp);
-  else temp = readStringClean(fp);
+  if (sot == 0) temp = readToken(fp);
+  else temp = readString(fp);
+  /*--------clean string--------*/
+  temp = cleaner(temp);
   while (!feof(fp)) {
     STRING *temp2 = newSTRING(temp);
     insertGST(tree, temp2);
     sot = stringPending(fp);
-    if (sot == 0) temp = readTokenClean(fp);
-    else temp = readStringClean(fp);
+    if (sot == 0) temp = readToken(fp);
+    else temp = readString(fp);
+    /*--------clean string--------*/
+    temp = cleaner(temp);
   }
   fclose(fp);
 
@@ -149,28 +163,34 @@ gstRead(GST *tree, int argc, char **argv)
 
       case 'i':
         int sot = stringPending(fp2);
-        if (sot == 0) temp = readTokenClean(fp2);
-        else temp = readStringClean(fp2);
-        STRING *temp2 = newSTRING(temp);
-        insertGST(tree, temp2);
+        if (sot == 0) temp = readToken(fp2);
+        else temp = readString(fp2);
+        /*--------clean string--------*/
+        temp = cleaner(temp);
+        STRING *temp3 = newSTRING(temp);
+        insertGST(tree, temp3);
         break;
 
       case 'd':
         int sot = stringPending(fp2);
-        if (sot == 0) temp = readTokenClean(fp2);
-        else temp = readStringClean(fp2);
-        STRING *temp2 = newSTRING(temp);
-        deleteGST(tree, temp2);
+        if (sot == 0) temp = readToken(fp2);
+        else temp = readString(fp2);
+        /*--------clean string--------*/
+        temp = cleaner(temp);
+        STRING *temp3 = newSTRING(temp);
+        deleteGST(tree, temp3);
         break;
 
       case 'f':
         int sot = stringPending(fp2);
-        if (sot == 0) temp = readTokenClean(fp2);
-        else temp = readStringClean(fp2);
-        STRING *temp2 = newSTRING(temp);
-        int freq = findGSTcount(temp2);
+        if (sot == 0) temp = readToken(fp2);
+        else temp = readString(fp2);
+        /*--------clean string--------*/
+        temp = cleaner(temp);
+        STRING *temp3 = newSTRING(temp);
+        int freq = findGSTcount(temp3);
         printf("Frequency of ");
-        displaySTRING(temp2, stdout);
+        displaySTRING(temp3, stdout);
         printf(": %d\n", freq);
         break;
     }
@@ -183,142 +203,39 @@ gstRead(GST *tree, int argc, char **argv)
 }
 
 
-char *
-readStringClean(FILE *fp)
+extern char *
+cleaner(char *str)
 {
-  int ch,index;
-  char *buffer;
-  int size = 512;
-
-  /* advance to the double quote */
-
-  skipWhiteSpace(fp);
-
-  if (feof(fp)) return 0;
-
-  ch = fgetc(fp);
-
-  if (ch == EOF) return 0;
-
-  /* allocate the buffer */
-
-  buffer = allocateMsg(size,"readString");
-
-  if (ch != '\"')
-      {
-      fprintf(stderr,"SCAN ERROR: attempt to read a string failed\n");
-      fprintf(stderr,"first character was <%c>\n",ch);
-      exit(4);
-      }
-
-  /* toss the double quote, skip to the next character */
-
-  ch = fgetc(fp);
-
-  /* initialize the buffer index */
-
-  index = 0;
-
-  /* collect characters until the closing double quote */
-
-  while (ch != '\"') {
-    int space = 0;
-    if (ch == EOF) {
-      fprintf(stderr,"SCAN ERROR: attempt to read a string failed\n");
-      fprintf(stderr,"no closing double quote\n");
-      exit(6);
+  int length = strlen(str);
+  int source = 0;
+  int dest = 0;
+  int space = 0;
+  while (str[source] != '\0') {
+    if (islower(str[source])) {
+      space = 0;
+      str[dest] = str[source];
+      ++dest;
     }
-    if (index > size - 2) {
-      ++size;
-      buffer = reallocateMsg(buffer,size,"readString");
+    else if (isalpha(str[source])) {
+      space = 0;
+      str[dest] = str[source]+32;
+      ++dest;
     }
-
-    if (ch == '\\') {
-      ch = fgetc(fp);
-      if (ch == EOF) {
-        fprintf(stderr,"SCAN ERROR: attempt to read a string failed\n");
-        fprintf(stderr,"escaped character missing\n");
-        exit(6);
-      }
-      buffer[index] = convertEscapedChar(ch);
-      ++index;
-      ch = fgetc(fp);
-    }
-    else {
-      if ((ch >= 97 && ch <= 122) || ch == 32) {
-        if (space == 1 && ch == 32) {
-          ch = fgetc(fp);
-        }
-        else if (space == 0 && ch == 32) {
-          space = 1;
-          buffer[index] = ch;
-          ++index;
-          ch = fgetc(fp);
-        }
-        else {
-          space = 0;
-          buffer[index] = ch;
-          ++index;
-          ch = fgetc(fp);
-        }
-      }
-      else if (ch >= 65 && ch <= 90) {
-        ch = ch + 32;
-        buffer[index] = ch;
-        ++index;
-        ch = fgetc(fp);
-      }
-      else {
-        ch = fgetc(fp);
+    else if (str[source] == ' ') {
+      if (space == 0) {
+        space = 1;
+        str[dest] = str[source];
+        ++dest;
+      else continue;
       }
     }
+    source++;
   }
-
-  buffer[index] = '\0';
-
-  return buffer;
-}
-
-
-char *
-readTokenClean(FILE *fp)
-{
-  int ch,index;
-  char *buffer;
-  int size = 80;
-
-  skipWhiteSpace(fp);
-
-  ch = fgetc(fp);
-  if (ch == EOF) return 0;
-
-  buffer = allocateMsg(size,"readToken");
-
-  index = 0;
-  while (!isspace(ch)) {
-    if (ch == EOF) break;
-    if (index > size - 2) {
-      ++size;
-      buffer = reallocateMsg(buffer,size,"readToken");
-    }
-    if (ch >= 97 && ch <= 122) {
-      buffer[index] = ch;
-      ++index;
-      ch = fgetc(fp);
-    }
-    else {
-      ch = fgetc(fp);
-    }
+  str[dest] = '\0';
+  dest++;
+  char *str2[dest];
+  for (int i=0; i<dest; i++) {
+    str2[i] = str[i];
   }
-
-  /* push back the character that got us out of this loop */
-
-  ungetc(ch,fp);
-
-  if (index > 0)              //there is something in the buffer
-      clearerr(fp);           //so force the read to be good
-
-  buffer[index] = '\0';
-
-  return buffer;
+  return str2;
 }
