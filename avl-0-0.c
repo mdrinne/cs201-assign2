@@ -13,7 +13,7 @@ long int random(void);
 int
 main(void)
     {
-    srandom(41);
+    srandom(101);
     //simple INTEGER test of AVL
     AVL *p = newAVL(displayINTEGER,compareINTEGER,freeINTEGER);
     insertAVL(p,newINTEGER(2));

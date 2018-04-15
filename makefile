@@ -32,8 +32,8 @@ test-gst:
 	gcc $(LOPTS) gst-0-0.c $(BOEXTRA) gst.o bst.o -o test-gst
 
 test-avl:
-	gcc $(LOPTS) -c avl-0-4.c avl.c bst.c $(BEXTRA)
-	gcc $(LOPTS) avl-0-4.c $(BOEXTRA) avl.o bst.o -o test-avl
+	gcc $(LOPTS) -c avl-0-6.c avl.c bst.c $(BEXTRA)
+	gcc $(LOPTS) avl-0-6.c $(BOEXTRA) avl.o bst.o -o test-avl
 
 trees:
 	gcc $(LOPTS) -c trees.c bst.c $(BEXTRA) gst.c avl.c scanner.c
