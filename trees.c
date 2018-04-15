@@ -75,9 +75,9 @@ avlRead(AVL *tree, int argc, char **argv)
   fclose(fp);
 
   FILE *fp2 = fopen(argv[argc-1], "r");
-  temp = fgetc(fp2);
+  char c = fgetc(fp2);
   while (!feof(fp2)) {
-    switch (temp) {
+    switch (c) {
       case 's':
         displayAVL(tree, stdout);
         break;
@@ -88,6 +88,7 @@ avlRead(AVL *tree, int argc, char **argv)
 
       case 'i':
         int sot = stringPending(fp2);
+        // char *temp;
         if (sot == 0) temp = readToken(fp2);
         else temp = readString(fp2);
         /*--------clean string--------*/
@@ -98,6 +99,7 @@ avlRead(AVL *tree, int argc, char **argv)
 
       case 'd':
         int sot = stringPending(fp2);
+        // char *temp;
         if (sot == 0) temp = readToken(fp2);
         else temp = readString(fp2);
         /*--------clean string--------*/
@@ -108,6 +110,7 @@ avlRead(AVL *tree, int argc, char **argv)
 
       case 'f':
         int sot = stringPending(fp2);
+        // char *temp;
         if (sot == 0) temp = readToken(fp2);
         else temp = readString(fp2);
         /*--------clean string--------*/
@@ -121,7 +124,7 @@ avlRead(AVL *tree, int argc, char **argv)
     }
 
     skipWhiteSpace(fp2);
-    temp = fgetc(fp2);
+    c = fgetc(fp2);
   }
   fclose(fp2);
   return;
@@ -150,9 +153,9 @@ gstRead(GST *tree, int argc, char **argv)
   fclose(fp);
 
   FILE *fp2 = fopen(argv[argc-1], "r");
-  temp = fgetc(fp2);
+  char c = fgetc(fp2);
   while (!feof(fp2)) {
-    switch (temp) {
+    switch (c) {
       case 's':
         displayGST(tree, stdout);
         break;
@@ -163,6 +166,7 @@ gstRead(GST *tree, int argc, char **argv)
 
       case 'i':
         int sot = stringPending(fp2);
+        // char *temp;
         if (sot == 0) temp = readToken(fp2);
         else temp = readString(fp2);
         /*--------clean string--------*/
@@ -173,6 +177,7 @@ gstRead(GST *tree, int argc, char **argv)
 
       case 'd':
         int sot = stringPending(fp2);
+        // char *temp;
         if (sot == 0) temp = readToken(fp2);
         else temp = readString(fp2);
         /*--------clean string--------*/
@@ -183,6 +188,7 @@ gstRead(GST *tree, int argc, char **argv)
 
       case 'f':
         int sot = stringPending(fp2);
+        // char *temp;
         if (sot == 0) temp = readToken(fp2);
         else temp = readString(fp2);
         /*--------clean string--------*/
@@ -196,7 +202,7 @@ gstRead(GST *tree, int argc, char **argv)
     }
 
     skipWhiteSpace(fp2);
-    temp = fgetc(fp2);
+    c = fgetc(fp2);
   }
   fclose(fp2);
   return;
@@ -221,7 +227,7 @@ cleaner(char *str)
       str[dest] = str[source]+32;
       ++dest;
     }
-    else if (str[source] == ' ') {
+    else if (str[source] == 32) {
       if (space == 0) {
         space = 1;
         str[dest] = str[source];
