@@ -1,3 +1,9 @@
+//  CS201 Assign2 avl.c
+//  Matthew Rinne
+//  This file implements an AVL tree, using a BST
+//  April 2018
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>

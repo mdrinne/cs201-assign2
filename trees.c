@@ -1,11 +1,14 @@
+//  CS201 Assign2 trees.c
+//  Matthew Rinne
+//  This file reads in data and implements a gst or avl tree accordingly
+//  April 2018
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <strings.h>
 #include <ctype.h>
 #include "bst.h"
 #include "string.h"
-// #include "integer.h"
-// #include "real.h"
 #include "sll.h"
 #include "queue.h"
 #include "gst.h"
@@ -292,7 +295,7 @@ cleanString(char *str)
       str[dest] = str[source];
       ++dest;
     }
-    else if (isalpha(str[source])) {
+    else if (isupper(str[source])) {
       space = 0;
       str[dest] = str[source]+32;
       ++dest;

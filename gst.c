@@ -1,3 +1,9 @@
+//  CS201 Assign2 gst.c
+//  Matthew Rinne
+//  This file implements a Green Search Tree, using a BST
+//  April 2018
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
