@@ -264,13 +264,15 @@ cleanToken(char *str)
   int size = strlen(str);
   int dest = 0;
   for (int i=0; i<size; i++) {
-    if (isupper(str[i])) {
-      str[dest] = str[i]+32;
-      ++dest;
-    }
-    else {
-      str[dest] = str[i];
-      ++dest;
+    if (isalpha(str[i])) {
+      if (isupper(str[i])) {
+        str[dest] = str[i]+32;
+        ++dest;
+      }
+      else {
+        str[dest] = str[i];
+        ++dest;
+      }
     }
   }
   str[dest] = '\0';
