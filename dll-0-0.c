@@ -3,10 +3,13 @@
 #include "dll.h"
 #include "integer.h"
 
+extern void srandom(unsigned int);
+extern long int random(void);
+
 int
 main(void)
     {
-    srandom(1);
+    srandom(9383);
     DLL *p = newDLL(displayINTEGER,freeINTEGER);
     insertDLL(p,0,newINTEGER(3));
     insertDLL(p,sizeDLL(p),newINTEGER(2));
