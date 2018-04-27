@@ -124,7 +124,13 @@ avlRead(AVL *tree, int argc, char **argv)
           if (temp) cleanString(temp);
         }
         STRING *temp4 = newSTRING(temp);
-        if (isalpha(temp[0])) deleteAVL(tree, temp4);
+        void *del = findAVL(tree, temp4);
+        if (del == NULL && isalpha(temp[0])) {
+          printf("Value ");
+          displaySTRING(temp4, stdout);
+          printf(" not found.\n");
+        }
+        else if (isalpha(temp[0])) deleteAVL(tree, temp4);
         break;
 
       case 'f':
@@ -219,7 +225,13 @@ gstRead(GST *tree, int argc, char **argv)
           if (temp) cleanString(temp);
         }
         STRING *temp4 = newSTRING(temp);
-        if (isalpha(temp[0])) deleteGST(tree, temp4);
+        void *del = findGST(tree, temp4);
+        if (del == NULL && isalpha(temp[0])) {
+          printf("Value ");
+          displaySTRING(temp4, stdout);
+          printf(" not found.\n");
+        }
+        else if (isalpha(temp[0])) deleteGST(tree, temp4);
         break;
 
       case 'f':
@@ -261,61 +273,113 @@ skipWhiteSpace(FILE *fp)
 }
 
 
-extern void
-cleanToken(char *str)
-{
+void cleanToken(char *str) {
   int size = strlen(str);
-  int dest = 0;
+  int pos = 0;
   for (int i=0; i<size; i++) {
     if (isalpha(str[i])) {
       if (isupper(str[i])) {
-        str[dest] = str[i]+32;
-        ++dest;
+        str[pos] = str[i] + 32;
       }
       else {
-        str[dest] = str[i];
-        ++dest;
+        str[pos] = str[i];
       }
+      pos ++;
     }
+    else continue;
   }
-  str[dest] = '\0';
+  str[pos] = '\0';
   return;
 }
 
-extern void
-cleanString(char *str)
-{
+void cleanString(char *str) {
   int size = strlen(str);
-  int source = 0;
-  int dest = 0;
+  int pos = 0;
   int space = 0;
   for (int i=0; i<size; i++) {
-    if (islower(str[source])) {
-      space = 0;
-      str[dest] = str[source];
-      ++dest;
-    }
-    else if (isupper(str[source])) {
-      space = 0;
-      str[dest] = str[source]+32;
-      ++dest;
-    }
-    else if (str[source] == 32) {
-      if (space == 0) {
-        space = 1;
-        str[dest] = str[source];
-        ++dest;
+    if (str[i] == 32) {
+      if (space != 0) {
+        space = 0;
+        str[pos] = str[i];
+        pos ++;
       }
       else continue;
     }
-    source++;
+    else if (isalpha(str[i])) {
+      if (isupper(str[i])) {
+        str[pos] = str[i] + 32;
+      }
+      else {
+        str[pos] = str[i];
+      }
+      space = 1;
+      pos ++;
+    }
+    else continue;
   }
 
-  if (isspace(str[dest-1])) {
-    str[dest-1] = '\0';
+  if (isspace(str[pos-1])) {
+    str[pos-1] = '\0';
   }
   else {
-    str[dest] = '\0';
+    str[pos] = '\0';
   }
   return;
 }
+
+
+// extern void
+// cleanToken(char *str)
+// {
+//   int size = strlen(str);
+//   int dest = 0;
+//   for (int i=0; i<size; i++) {
+//     if (isalpha(str[i])) {
+//       if (isupper(str[i])) {
+//         str[dest] = str[i]+32;
+//         ++dest;
+//       }
+//       else {
+//         str[dest] = str[i];
+//         ++dest;
+//       }
+//     }
+//   }
+//   str[dest] = '\0';
+//   return;
+// }
+//
+// extern void
+// cleanString(char *str)
+// {
+//   int size = strlen(str);
+//   int dest = 0;
+//   int space = 0;
+//   for (int i=0; i<size; i++) {
+//     if (str[i] == 32) {
+//       if (space == 0) {
+//         space = 1;
+//         str[dest] = str[i];
+//         dest++;
+//       }
+//       else continue;
+//     }
+//     else if (isalpha(str[i])) {
+//       if (isupper(str[i])) {
+//         str[dest] = str[i] + 32;
+//       }
+//       else {
+//         str[dest] = str[i];
+//       }
+//     }
+//     else continue;
+//   }
+//
+//   if (isspace(str[dest-1])) {
+//     str[dest-1] = '\0';
+//   }
+//   else {
+//     str[dest] = '\0';
+//   }
+//   return;
+// }
